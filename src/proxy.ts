@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 const publicPaths = ['/login', '/register', '/api/auth/callback']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
           supabaseResponse = NextResponse.next({ request })
@@ -50,8 +50,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Check onboarding status for non-onboarding pages
-  if (pathname !== '/onboarding') {
+  // Check onboarding status for non-onboarding pages (skip API routes)
+  if (pathname !== '/onboarding' && !pathname.startsWith('/api/')) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('onboarding_completed')

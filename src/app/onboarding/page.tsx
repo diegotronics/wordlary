@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2, ArrowRight } from 'lucide-react'
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
+import { Check, ArrowRight, Loader2, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
+import type { ReactNode } from 'react'
 
 interface Interest {
   id: string
@@ -17,6 +17,133 @@ interface Interest {
 const MIN_INTERESTS = 3
 const MAX_INTERESTS = 6
 
+const RELATED_MAP: Record<string, string[]> = {
+  technology:    ['science', 'business', 'entertainment'],
+  sports:        ['health', 'nature'],
+  cooking:       ['health', 'nature', 'travel', 'science'],
+  music:         ['art', 'entertainment', 'literature'],
+  travel:        ['nature', 'art', 'cooking', 'literature'],
+  science:       ['technology', 'nature', 'health'],
+  business:      ['technology', 'literature'],
+  health:        ['sports', 'cooking', 'science', 'nature'],
+  entertainment: ['music', 'art', 'literature', 'technology'],
+  nature:        ['science', 'travel', 'sports', 'health'],
+  art:           ['music', 'literature', 'entertainment'],
+  literature:    ['art', 'music', 'business', 'travel'],
+}
+
+type CardCategory = 'selected' | 'suggested' | 'other'
+
+// ---------------------------------------------------------------------------
+// InterestCard
+// ---------------------------------------------------------------------------
+function InterestCard({
+  interest,
+  category,
+  onToggle,
+  isMaxed,
+}: {
+  interest: Interest
+  category: CardCategory
+  onToggle: (id: string) => void
+  isMaxed: boolean
+}) {
+  const isSelected = category === 'selected'
+  const isSuggested = category === 'suggested'
+  const isDisabled = !isSelected && isMaxed
+
+  const borderClass = isSelected
+    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40'
+    : isSuggested
+    ? 'border-amber-300/70 bg-amber-50/50 hover:border-amber-400 hover:bg-amber-50 dark:bg-amber-950/20 dark:hover:bg-amber-950/40'
+    : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted/40'
+
+  return (
+    <motion.button
+      layout
+      layoutId={`card-${interest.id}`}
+      onClick={() => onToggle(interest.id)}
+      disabled={isDisabled}
+      className={[
+        'relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center',
+        'transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        borderClass,
+        isDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+      ].join(' ')}
+      initial={{ opacity: 0, scale: 0.88 }}
+      animate={{ opacity: isDisabled ? 0.35 : 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.15 } }}
+      transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+      whileHover={!isDisabled ? { scale: 1.05, y: -2 } : undefined}
+      whileTap={!isDisabled ? { scale: 0.95 } : undefined}
+    >
+      {/* Check badge */}
+      <AnimatePresence>
+        {isSelected && (
+          <motion.span
+            key="check"
+            className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white"
+            initial={{ scale: 0, rotate: -90 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0 }}
+            transition={{ type: 'spring', stiffness: 600, damping: 30 }}
+          >
+            <Check className="h-3 w-3" strokeWidth={3} />
+          </motion.span>
+        )}
+        {isSuggested && (
+          <motion.span
+            key="badge"
+            className="absolute right-1.5 top-1.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-700 dark:bg-amber-900/50 dark:text-amber-300"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.7 }}
+            transition={{ duration: 0.2 }}
+          >
+            Para ti
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      <span className="text-[2rem] leading-none">{interest.emoji}</span>
+      <span className="text-[11px] font-semibold leading-tight text-foreground/80">
+        {interest.name}
+      </span>
+    </motion.button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SectionHeading
+// ---------------------------------------------------------------------------
+function SectionHeading({
+  label,
+  icon,
+  className = '',
+}: {
+  label: string
+  icon?: ReactNode
+  className?: string
+}) {
+  return (
+    <motion.div
+      className={`mb-3 flex items-center gap-1.5 ${className}`}
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -8 }}
+      transition={{ duration: 0.2 }}
+    >
+      {icon}
+      <span className="text-[11px] font-bold uppercase tracking-widest text-current">
+        {label}
+      </span>
+    </motion.div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 export default function OnboardingPage() {
   const router = useRouter()
   const [interests, setInterests] = useState<Interest[]>([])
@@ -26,8 +153,8 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     fetch('/api/interests')
-      .then((r) => r.json())
-      .then((data) => {
+      .then(r => r.json())
+      .then(data => {
         setInterests(data.all || [])
         if (data.selected?.length) {
           setSelected(new Set(data.selected))
@@ -37,7 +164,7 @@ export default function OnboardingPage() {
   }, [])
 
   const toggleInterest = (id: string) => {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev)
       if (next.has(id)) {
         next.delete(id)
@@ -47,6 +174,18 @@ export default function OnboardingPage() {
       return next
     })
   }
+
+  const { selectedList, suggestedList, otherList } = useMemo(() => {
+    const selIds = new Set(selected)
+    const selSlugs = interests.filter(i => selIds.has(i.id)).map(i => i.slug)
+    const sugSlugSet = new Set(selSlugs.flatMap(s => RELATED_MAP[s] ?? []))
+
+    return {
+      selectedList:  interests.filter(i => selIds.has(i.id)),
+      suggestedList: interests.filter(i => !selIds.has(i.id) && sugSlugSet.has(i.slug)),
+      otherList:     interests.filter(i => !selIds.has(i.id) && !sugSlugSet.has(i.slug)),
+    }
+  }, [interests, selected])
 
   const handleContinue = async () => {
     if (selected.size < MIN_INTERESTS) return
@@ -64,71 +203,236 @@ export default function OnboardingPage() {
       router.push('/')
       router.refresh()
     } catch {
-      toast.error('Failed to save your interests. Please try again.')
+      toast.error('No se pudieron guardar los intereses. Inténtalo de nuevo.')
     } finally {
       setIsSaving(false)
     }
   }
 
+  const isMaxed   = selected.size >= MAX_INTERESTS
+  const remaining = Math.max(0, MIN_INTERESTS - selected.size)
+  const canContinue = selected.size >= MIN_INTERESTS
+
+  // Hint text that changes as the user selects
+  const hintText = remaining > 0
+    ? `Selecciona ${remaining} tema${remaining !== 1 ? 's' : ''} más para continuar`
+    : isMaxed
+    ? '¡Máximo alcanzado! Continúa cuando quieras.'
+    : `Puedes añadir ${MAX_INTERESTS - selected.size} más o continuar ahora`
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted/30 p-4">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">What are you interested in?</CardTitle>
-          <CardDescription>
-            Choose {MIN_INTERESTS}-{MAX_INTERESTS} topics to personalize your vocabulary.
-            We&apos;ll generate words related to your interests.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+    <div className="flex min-h-screen flex-col bg-background">
+      {/* ── Sticky header ────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-20 border-b border-border/40 bg-background/80 backdrop-blur-lg">
+        <div className="mx-auto max-w-2xl px-4 py-4">
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                VocabFlow · Configuración inicial
+              </p>
+              <h1 className="mt-0.5 text-xl font-bold tracking-tight">
+                ¿Qué te interesa aprender?
+              </h1>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={hintText}
+                  className="mt-0.5 text-xs text-muted-foreground"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  {hintText}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+
+            {/* Pill-dot progress */}
+            <div className="flex shrink-0 flex-col items-end pt-1">
+              <div className="flex gap-1">
+                {Array.from({ length: MAX_INTERESTS }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="h-2 rounded-full"
+                    animate={{
+                      width: i < selected.size ? 14 : 8,
+                      backgroundColor:
+                        i < selected.size
+                          ? i < MIN_INTERESTS
+                            ? '#10b981'   // emerald-500
+                            : '#f59e0b'   // amber-500
+                          : 'hsl(var(--border))',
+                    }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                ))}
+              </div>
+              <span className="mt-1 text-[10px] text-muted-foreground">
+                {selected.size} / {MAX_INTERESTS}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Scrollable content ───────────────────────────────────────────── */}
+      <main className="flex-1">
+        <div className="mx-auto max-w-2xl px-4 py-6 pb-36">
           {isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="flex justify-center py-20">
+              <Loader2 className="h-7 w-7 animate-spin text-muted-foreground" />
             </div>
           ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {interests.map((interest) => {
-                  const isSelected = selected.has(interest.id)
-                  return (
-                    <button
-                      key={interest.id}
-                      onClick={() => toggleInterest(interest.id)}
-                      className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 transition-all ${
-                        isSelected
-                          ? 'border-primary bg-primary/5 shadow-sm'
-                          : 'border-border hover:border-primary/40 hover:bg-muted/50'
-                      }`}
-                    >
-                      <span className="text-2xl">{interest.emoji}</span>
-                      <span className="text-sm font-medium">{interest.name}</span>
-                    </button>
-                  )
-                })}
-              </div>
+            <LayoutGroup id="interests-grid">
+              <motion.div layout className="space-y-8">
 
-              <div className="space-y-3">
-                <p className="text-center text-sm text-muted-foreground">
-                  {selected.size} of {MIN_INTERESTS} minimum selected
-                </p>
-                <Button
-                  onClick={handleContinue}
-                  disabled={selected.size < MIN_INTERESTS || isSaving}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isSaving ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <ArrowRight className="mr-2 h-4 w-4" />
+                {/* ── Selected section ─────────────────────────────────── */}
+                <AnimatePresence>
+                  {selectedList.length > 0 && (
+                    <motion.div
+                      key="selected-section"
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <AnimatePresence>
+                        <SectionHeading
+                          key="selected-heading"
+                          label="Tus temas"
+                          icon={<Check className="h-3 w-3" strokeWidth={3} />}
+                          className="text-emerald-600 dark:text-emerald-400"
+                        />
+                      </AnimatePresence>
+                      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                        <AnimatePresence mode="popLayout">
+                          {selectedList.map(interest => (
+                            <InterestCard
+                              key={interest.id}
+                              interest={interest}
+                              category="selected"
+                              onToggle={toggleInterest}
+                              isMaxed={isMaxed}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
                   )}
-                  Continue to VocabFlow
-                </Button>
-              </div>
-            </>
+                </AnimatePresence>
+
+                {/* ── Suggested section ────────────────────────────────── */}
+                <AnimatePresence>
+                  {suggestedList.length > 0 && (
+                    <motion.div
+                      key="suggested-section"
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25, delay: 0.06 }}
+                    >
+                      <AnimatePresence>
+                        <SectionHeading
+                          key="suggested-heading"
+                          label="También te puede gustar"
+                          icon={<Sparkles className="h-3 w-3" />}
+                          className="text-amber-600 dark:text-amber-400"
+                        />
+                      </AnimatePresence>
+                      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                        <AnimatePresence mode="popLayout">
+                          {suggestedList.map(interest => (
+                            <InterestCard
+                              key={interest.id}
+                              interest={interest}
+                              category="suggested"
+                              onToggle={toggleInterest}
+                              isMaxed={isMaxed}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* ── Other / all interests ────────────────────────────── */}
+                {otherList.length > 0 && (
+                  <motion.div layout>
+                    {selectedList.length > 0 ? (
+                      <AnimatePresence>
+                        <SectionHeading
+                          key="more-heading"
+                          label="Más temas"
+                          className="text-muted-foreground"
+                        />
+                      </AnimatePresence>
+                    ) : (
+                      <p className="mb-4 text-sm text-muted-foreground">
+                        Elige {MIN_INTERESTS}–{MAX_INTERESTS} temas para personalizar tu vocabulario.
+                        Verás sugerencias relacionadas a medida que elijas.
+                      </p>
+                    )}
+                    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                      <AnimatePresence mode="popLayout">
+                        {otherList.map(interest => (
+                          <InterestCard
+                            key={interest.id}
+                            interest={interest}
+                            category="other"
+                            onToggle={toggleInterest}
+                            isMaxed={isMaxed}
+                          />
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                )}
+
+              </motion.div>
+            </LayoutGroup>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </main>
+
+      {/* ── Fixed bottom bar ─────────────────────────────────────────────── */}
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border/40 bg-background/90 backdrop-blur-lg">
+        <div className="mx-auto max-w-2xl px-4 py-4">
+          <div className="flex items-center gap-4">
+            {/* Progress bar */}
+            <div className="flex-1">
+              <div className="h-1 overflow-hidden rounded-full bg-muted">
+                <motion.div
+                  className="h-full rounded-full bg-primary"
+                  animate={{
+                    width: `${Math.min((selected.size / MIN_INTERESTS) * 100, 100)}%`,
+                  }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 30 }}
+                />
+              </div>
+            </div>
+
+            {/* CTA */}
+            <motion.button
+              layout
+              onClick={handleContinue}
+              disabled={!canContinue || isSaving}
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground disabled:pointer-events-none disabled:opacity-40"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowRight className="h-4 w-4" />
+              )}
+              {isSaving ? 'Guardando…' : 'Continuar'}
+            </motion.button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

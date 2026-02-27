@@ -54,7 +54,11 @@ export async function GET() {
         )
       }
 
-      return NextResponse.json({ session: existingSession, words })
+      return NextResponse.json({
+        session: existingSession,
+        words,
+        ...((!words || words.length === 0) && { needs_generation: true }),
+      })
     }
 
     // No session today -- get user's daily_word_count from their profile

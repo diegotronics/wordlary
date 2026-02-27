@@ -75,6 +75,9 @@ export async function PATCH(
       )
     }
 
+    // Run session update, review schedule, and streak update in parallel
+    const sideEffects: Promise<void>[] = []
+
     // Update session words_completed count
     if (completedDelta !== 0) {
       const session = word.daily_sessions as {
@@ -84,17 +87,18 @@ export async function PATCH(
       const newCompleted = session.words_completed + completedDelta
       const isCompleted = newCompleted >= session.word_count
 
-      const { error: sessionUpdateError } = await supabase
-        .from('daily_sessions')
-        .update({
-          words_completed: newCompleted,
-          is_completed: isCompleted,
-        })
-        .eq('id', word.session_id)
-
-      if (sessionUpdateError) {
-        console.error('Failed to update session:', sessionUpdateError)
-      }
+      sideEffects.push(
+        supabase
+          .from('daily_sessions')
+          .update({
+            words_completed: newCompleted,
+            is_completed: isCompleted,
+          })
+          .eq('id', word.session_id)
+          .then(({ error }) => {
+            if (error) console.error('Failed to update session:', error)
+          })
+      )
     }
 
     // If marking as learned, create a review schedule entry
@@ -103,72 +107,72 @@ export async function PATCH(
       tomorrow.setDate(tomorrow.getDate() + 1)
       const nextReviewDate = tomorrow.toISOString().split('T')[0]
 
-      // Upsert to handle edge case where review_schedule already exists
-      const { error: reviewError } = await supabase
-        .from('review_schedule')
-        .upsert(
-          {
-            user_id: user.id,
-            word_id: wordId,
-            next_review_date: nextReviewDate,
-            ease_factor: 2.5,
-            repetition_number: 0,
-            interval_days: 1,
-            total_reviews: 0,
-            correct_reviews: 0,
-          },
-          { onConflict: 'word_id' }
-        )
-
-      if (reviewError) {
-        console.error('Failed to create review schedule:', reviewError)
-      }
-    }
-
-    // Update user streak
-    if (is_learned && !wasLearned) {
-      const today = new Date().toISOString().split('T')[0]
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('current_streak, longest_streak, last_session_date')
-        .eq('id', user.id)
-        .single()
-
-      if (!profileError && profile) {
-        const yesterday = new Date()
-        yesterday.setDate(yesterday.getDate() - 1)
-        const yesterdayStr = yesterday.toISOString().split('T')[0]
-
-        let newStreak = profile.current_streak
-        const lastDate = profile.last_session_date
-
-        if (lastDate === today) {
-          // Already updated today, no streak change needed
-        } else if (lastDate === yesterdayStr) {
-          // Consecutive day -- increment streak
-          newStreak = profile.current_streak + 1
-        } else {
-          // Gap in days -- reset streak to 1
-          newStreak = 1
-        }
-
-        const newLongest = Math.max(newStreak, profile.longest_streak)
-
-        const { error: streakError } = await supabase
-          .from('profiles')
-          .update({
-            current_streak: newStreak,
-            longest_streak: newLongest,
-            last_session_date: today,
+      sideEffects.push(
+        supabase
+          .from('review_schedule')
+          .upsert(
+            {
+              user_id: user.id,
+              word_id: wordId,
+              next_review_date: nextReviewDate,
+              ease_factor: 2.5,
+              repetition_number: 0,
+              interval_days: 1,
+              total_reviews: 0,
+              correct_reviews: 0,
+            },
+            { onConflict: 'word_id' }
+          )
+          .then(({ error }) => {
+            if (error) console.error('Failed to create review schedule:', error)
           })
-          .eq('id', user.id)
+      )
 
-        if (streakError) {
-          console.error('Failed to update streak:', streakError)
-        }
-      }
+      // Update user streak
+      sideEffects.push(
+        (async () => {
+          const today = new Date().toISOString().split('T')[0]
+
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('current_streak, longest_streak, last_session_date')
+            .eq('id', user.id)
+            .single()
+
+          if (profileError || !profile) return
+
+          const yesterday = new Date()
+          yesterday.setDate(yesterday.getDate() - 1)
+          const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+          let newStreak = profile.current_streak
+          const lastDate = profile.last_session_date
+
+          if (lastDate === today) {
+            // Already updated today, no streak change needed
+          } else if (lastDate === yesterdayStr) {
+            newStreak = profile.current_streak + 1
+          } else {
+            newStreak = 1
+          }
+
+          const newLongest = Math.max(newStreak, profile.longest_streak)
+
+          const { error: streakError } = await supabase
+            .from('profiles')
+            .update({
+              current_streak: newStreak,
+              longest_streak: newLongest,
+              last_session_date: today,
+            })
+            .eq('id', user.id)
+
+          if (streakError) console.error('Failed to update streak:', streakError)
+        })()
+      )
     }
+
+    await Promise.all(sideEffects)
 
     return NextResponse.json({ word: updatedWord })
   } catch (error) {

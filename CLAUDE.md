@@ -18,7 +18,7 @@ VocabFlow is a vocabulary learning app for Spanish speakers learning English. Us
 
 ### Data Flow
 
-1. **Auth**: Supabase Auth (email/password + Google OAuth). Middleware at `src/middleware.ts` protects all routes, redirecting unauthenticated users to `/login` and users who haven't completed onboarding to `/onboarding`.
+1. **Auth**: Supabase Auth (email/password + Google OAuth). Next.js 16 replaces `middleware.ts` with `src/proxy.ts` (exported function `proxy`). It protects all routes, redirecting unauthenticated users to `/login` and users who haven't completed onboarding to `/onboarding`. API routes (`/api/*`) are excluded from the onboarding redirect since they handle auth independently.
 
 2. **Daily Session Lifecycle**: Dashboard loads → `GET /api/session` (creates today's session if none exists) → if `needs_generation` is true, client calls `POST /api/generate` → Gemini generates words → words inserted in DB → user flips through cards → `PATCH /api/words/[id]` marks each as learned (also creates `review_schedule` entry and updates streak).
 
@@ -29,7 +29,7 @@ VocabFlow is a vocabulary learning app for Spanish speakers learning English. Us
 Three client factories in `src/lib/supabase/`:
 - **`server.ts`** — async `createClient()` using `cookies()` from `next/headers`. Used in all API route handlers and server components.
 - **`client.ts`** — `createClient()` using `createBrowserClient`. Used in client components.
-- **`middleware.ts`** — `updateSession()` for the Next.js middleware to refresh auth tokens.
+- **`middleware.ts`** — `updateSession()` for the Next.js proxy to refresh auth tokens.
 
 All API routes authenticate via `supabase.auth.getUser()` and verify resource ownership with `.eq('user_id', user.id)`. Database has RLS policies as a second auth layer.
 

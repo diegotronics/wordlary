@@ -14,7 +14,7 @@ BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql;
 
 -- Auto-create a profile row when a new auth.users row is inserted
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -27,7 +27,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ---------------------------------------------------------------------------
 -- 2. TABLES
@@ -297,7 +297,7 @@ RETURNS TEXT[] AS $$
   )
   FROM public.learned_words lw
   WHERE lw.user_id = p_user_id;
-$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Returns an array of interest slugs for the given user
 CREATE OR REPLACE FUNCTION public.get_user_interest_slugs(p_user_id UUID)
@@ -309,7 +309,7 @@ RETURNS TEXT[] AS $$
   FROM public.user_interests ui
   JOIN public.interests i ON i.id = ui.interest_id
   WHERE ui.user_id = p_user_id;
-$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- ---------------------------------------------------------------------------
 -- 7. SEED DATA - Interests

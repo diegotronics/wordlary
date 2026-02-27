@@ -52,6 +52,7 @@ export default function SettingsPage() {
       }
 
       const res = await fetch('/api/interests')
+      if (!res.ok) throw new Error('Failed to load interests')
       const data = await res.json()
       setAllInterests(data.all || [])
       setSelectedInterests(new Set(data.selected || []))
@@ -93,11 +94,12 @@ export default function SettingsPage() {
         })
         .eq('id', user.id)
 
-      await fetch('/api/interests', {
+      const interestsRes = await fetch('/api/interests', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ interest_ids: Array.from(selectedInterests) }),
       })
+      if (!interestsRes.ok) throw new Error('Failed to save interests')
 
       toast.success('Settings saved successfully')
     } catch {

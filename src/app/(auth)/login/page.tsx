@@ -19,6 +19,9 @@ import { Separator } from "@/components/ui/separator";
 import { OAuthButton } from "@/components/auth/oauth-button";
 import { Mail, Lock, Loader2 } from "lucide-react";
 
+const googleAuthEnabled =
+  process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -110,22 +113,26 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <Separator />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              or continue with
-            </span>
-          </div>
-        </div>
+        {googleAuthEnabled && (
+          <>
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  or continue with
+                </span>
+              </div>
+            </div>
 
-        <OAuthButton
-          provider="google"
-          label="Sign in with Google"
-          onClick={handleGoogleOAuth}
-        />
+            <OAuthButton
+              provider="google"
+              label="Sign in with Google"
+              onClick={handleGoogleOAuth}
+            />
+          </>
+        )}
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">

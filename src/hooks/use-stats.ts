@@ -17,7 +17,10 @@ export function useStats() {
 
   useEffect(() => {
     fetch('/api/stats')
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('stats')
+        return r.json()
+      })
       .then((data) => {
         // Map snake_case API response to camelCase
         const wordsByInterest = data.words_by_interest
@@ -39,6 +42,7 @@ export function useStats() {
             : 0,
         })
       })
+      .catch(() => {/* stats stays null */})
       .finally(() => setIsLoading(false))
   }, [])
 

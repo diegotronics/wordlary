@@ -86,6 +86,24 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   markWordLearned: async (wordId: string) => {
     const { words, session } = get()
+
+    // Optimistic UI update + auto-advance
+    const updatedWords = words.map((w) =>
+      w.id === wordId ? { ...w, is_learned: true } : w
+    )
+    const wordsCompleted = (session?.words_completed ?? 0) + 1
+    const isCompleted = session ? wordsCompleted >= session.word_count : false
+    const { currentIndex } = get()
+    const nextIndex = currentIndex < words.length - 1 ? currentIndex + 1 : currentIndex
+
+    set({
+      words: updatedWords,
+      currentIndex: nextIndex,
+      session: session
+        ? { ...session, words_completed: wordsCompleted, is_completed: isCompleted }
+        : null,
+    })
+
     try {
       const response = await fetch(`/api/words/${wordId}`, {
         method: 'PATCH',
@@ -93,23 +111,16 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
         body: JSON.stringify({ is_learned: true }),
       })
       if (!response.ok) {
+        // Revert on failure
+        set({ words, session })
         throw new Error('Failed to mark word as learned')
       }
-
-      const updatedWords = words.map((w) =>
-        w.id === wordId ? { ...w, is_learned: true } : w
-      )
-      const wordsCompleted = (session?.words_completed ?? 0) + 1
-      const isCompleted = session ? wordsCompleted >= session.word_count : false
-
-      set({
-        words: updatedWords,
-        session: session
-          ? { ...session, words_completed: wordsCompleted, is_completed: isCompleted }
-          : null,
-      })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to mark word as learned' })
+      set({
+        words,
+        session,
+        error: error instanceof Error ? error.message : 'Failed to mark word as learned',
+      })
     }
   },
 
