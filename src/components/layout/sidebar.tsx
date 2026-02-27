@@ -6,17 +6,20 @@ import { Home, RotateCcw, BarChart3, Settings, BookOpen, LogOut } from 'lucide-r
 import { cn } from '@/lib/utils'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
-
-const navItems = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/review', label: 'Review', icon: RotateCcw },
-  { href: '/progress', label: 'Progress', icon: BarChart3 },
-  { href: '/settings', label: 'Settings', icon: Settings },
-]
+import { useTranslations } from 'next-intl'
 
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const t = useTranslations('nav')
+  const tc = useTranslations('common')
+
+  const navItems = [
+    { href: '/', label: t('home'), icon: Home },
+    { href: '/review', label: t('review'), icon: RotateCcw },
+    { href: '/progress', label: t('progress'), icon: BarChart3 },
+    { href: '/settings', label: t('settings'), icon: Settings },
+  ]
 
   const handleLogout = async () => {
     const supabase = createBrowserClient(
@@ -62,7 +65,7 @@ export function Sidebar() {
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <LogOut className="h-4 w-4" />
-          Sign Out
+          {tc('signOut')}
         </button>
       </div>
     </aside>

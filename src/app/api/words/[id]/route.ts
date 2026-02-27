@@ -76,7 +76,7 @@ export async function PATCH(
     }
 
     // Run session update, review schedule, and streak update in parallel
-    const sideEffects: Promise<void>[] = []
+    const sideEffects: PromiseLike<void>[] = []
 
     // Update session words_completed count
     if (completedDelta !== 0) {

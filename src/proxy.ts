@@ -54,7 +54,7 @@ export async function proxy(request: NextRequest) {
   if (pathname !== '/onboarding' && !pathname.startsWith('/api/')) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('onboarding_completed')
+      .select('onboarding_completed, preferred_language')
       .eq('id', user.id)
       .single()
 
@@ -62,6 +62,16 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone()
       url.pathname = '/onboarding'
       return NextResponse.redirect(url)
+    }
+
+    // Sync locale cookie from profile if not already set
+    const localeCookie = request.cookies.get('NEXT_LOCALE')
+    if (!localeCookie && profile?.preferred_language) {
+      supabaseResponse.cookies.set('NEXT_LOCALE', profile.preferred_language, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax',
+      })
     }
   }
 

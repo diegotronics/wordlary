@@ -63,6 +63,19 @@ Route groups: `(auth)` for login/register, `(dashboard)` for the main app. Dashb
 - API routes return snake_case JSON; the `use-stats` hook maps to camelCase for components.
 - The `perspective-1000` CSS utility for 3D card flips is defined in `globals.css`.
 
+### Internationalization (i18n)
+
+- Uses `next-intl` in "without i18n routing" mode — no locale prefixes in URLs.
+- Supported locales: `es` (default), `en`. Config in `src/i18n/config.ts`.
+- Locale resolution order: `NEXT_LOCALE` cookie → `profiles.preferred_language` → default `es`.
+- Translation files: `src/i18n/messages/{locale}.json`, organized by namespace.
+- **All new UI strings must be added to both `es.json` and `en.json`** — never hardcode user-facing text.
+- Server Components: `const t = await getTranslations('namespace')` from `next-intl/server`.
+- Client Components: `const t = useTranslations('namespace')` from `next-intl`.
+- Root layout wraps children in `NextIntlClientProvider`.
+- Language switching: `POST /api/locale` updates profile + cookie, then `router.refresh()`.
+- Interest names are translated client-side using the `interests` namespace, keyed by slug.
+
 ## Environment Variables
 
 ```

@@ -18,6 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { OAuthButton } from "@/components/auth/oauth-button";
 import { Mail, Lock, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const googleAuthEnabled =
   process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
@@ -28,6 +29,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations('auth');
+  const tc = useTranslations('common');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +68,8 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to continue learning</CardDescription>
+        <CardTitle className="text-xl">{t('welcomeBack')}</CardTitle>
+        <CardDescription>{t('signInToContinue')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
@@ -76,13 +79,13 @@ export default function LoginPage() {
             </div>
           )}
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{tc('email')}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-9"
@@ -92,13 +95,13 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{tc('password')}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t('passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-9"
@@ -109,7 +112,7 @@ export default function LoginPage() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="animate-spin" />}
-            Sign in
+            {t('signIn')}
           </Button>
         </form>
 
@@ -121,14 +124,14 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">
-                  or continue with
+                  {t('orContinueWith')}
                 </span>
               </div>
             </div>
 
             <OAuthButton
               provider="google"
-              label="Sign in with Google"
+              label={t('signInWithGoogle')}
               onClick={handleGoogleOAuth}
             />
           </>
@@ -136,12 +139,12 @@ export default function LoginPage() {
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          {t('noAccount')}{" "}
           <Link
             href="/register"
             className="font-medium text-primary underline-offset-4 hover:underline"
           >
-            Sign up
+            {t('signUp')}
           </Link>
         </p>
       </CardFooter>

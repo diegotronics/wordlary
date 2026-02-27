@@ -11,6 +11,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Loader2, Save, LogOut } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 import { toast } from 'sonner'
+import { useTranslations, useLocale } from 'next-intl'
+import { LanguagePicker } from '@/components/settings/language-picker'
 
 interface Interest {
   id: string
@@ -29,6 +31,16 @@ export default function SettingsPage() {
   const [difficulty, setDifficulty] = useState('intermediate')
   const [allInterests, setAllInterests] = useState<Interest[]>([])
   const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set())
+
+  const t = useTranslations('settings')
+  const tc = useTranslations('common')
+  const locale = useLocale()
+
+  const difficultyLevels = [
+    { value: 'beginner', label: t('beginner') },
+    { value: 'intermediate', label: t('intermediate') },
+    { value: 'advanced', label: t('advanced') },
+  ]
 
   useEffect(() => {
     async function load() {
@@ -101,9 +113,9 @@ export default function SettingsPage() {
       })
       if (!interestsRes.ok) throw new Error('Failed to save interests')
 
-      toast.success('Settings saved successfully')
+      toast.success(t('savedSuccess'))
     } catch {
-      toast.error('Failed to save settings')
+      toast.error(t('savedError'))
     } finally {
       setIsSaving(false)
     }
@@ -131,15 +143,15 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
+      <h1 className="text-2xl font-bold">{t('title')}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Profile</CardTitle>
+          <CardTitle className="text-lg">{t('profile')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="displayName">Display Name</Label>
+            <Label htmlFor="displayName">{t('displayName')}</Label>
             <Input
               id="displayName"
               value={displayName}
@@ -147,7 +159,7 @@ export default function SettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dailyWords">Daily Word Count</Label>
+            <Label htmlFor="dailyWords">{t('dailyWordCount')}</Label>
             <Input
               id="dailyWords"
               type="number"
@@ -156,22 +168,22 @@ export default function SettingsPage() {
               value={dailyWordCount}
               onChange={(e) => setDailyWordCount(parseInt(e.target.value) || 10)}
             />
-            <p className="text-xs text-muted-foreground">Between 5 and 20 words per day</p>
+            <p className="text-xs text-muted-foreground">{t('dailyWordCountHint')}</p>
           </div>
           <div className="space-y-2">
-            <Label>Difficulty Level</Label>
+            <Label>{t('difficultyLevel')}</Label>
             <div className="flex gap-2">
-              {['beginner', 'intermediate', 'advanced'].map((d) => (
+              {difficultyLevels.map((d) => (
                 <button
-                  key={d}
-                  onClick={() => setDifficulty(d)}
-                  className={`rounded-lg border px-4 py-2 text-sm font-medium capitalize transition-colors ${
-                    difficulty === d
+                  key={d.value}
+                  onClick={() => setDifficulty(d.value)}
+                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                    difficulty === d.value
                       ? 'border-primary bg-primary/10 text-primary'
                       : 'border-border hover:bg-muted'
                   }`}
                 >
-                  {d}
+                  {d.label}
                 </button>
               ))}
             </div>
@@ -181,8 +193,18 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Interests</CardTitle>
-          <CardDescription>Choose 3-6 topics for your vocabulary</CardDescription>
+          <CardTitle className="text-lg">{t('language')}</CardTitle>
+          <CardDescription>{t('languageHint')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LanguagePicker currentLocale={locale} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{t('interests')}</CardTitle>
+          <CardDescription>{t('interestsHint')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -210,14 +232,14 @@ export default function SettingsPage() {
       <div className="flex flex-col gap-3">
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-          Save Changes
+          {t('saveChanges')}
         </Button>
 
         <Separator />
 
         <Button variant="outline" onClick={handleLogout} className="text-destructive hover:text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
-          Sign Out
+          {tc('signOut')}
         </Button>
       </div>
     </div>

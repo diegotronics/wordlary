@@ -44,6 +44,8 @@ CREATE TABLE public.profiles (
   daily_word_count      INTEGER     NOT NULL DEFAULT 10,
   preferred_difficulty  TEXT        NOT NULL DEFAULT 'intermediate'
                         CHECK (preferred_difficulty IN ('beginner', 'intermediate', 'advanced')),
+  preferred_language    TEXT        NOT NULL DEFAULT 'es'
+                        CHECK (preferred_language IN ('es', 'en')),
   created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at            TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -327,5 +329,16 @@ INSERT INTO public.interests (name, slug, emoji) VALUES
   ('Entertainment', 'entertainment', '🎬'),
   ('Nature',        'nature',        '🌿'),
   ('Art',           'art',           '🎨'),
-  ('Literature',    'literature',    '📚')
+  ('Literature',    'literature',    '📚'),
+  ('Fitness',       'fitness',       '🏋️'),
+  ('Finance',       'finance',       '💰'),
+  ('Programming',   'programming',   '💻'),
+  ('History',       'history',       '📜'),
+  ('Geography',     'geography',     '🌍'),
+  ('Art',           'art',           '🎨'),
+  ('Literature',    'literature',    '📚'),
+  ('Music',         'music',         '🎵'),
+  ('Movies',        'movies',        '🎥'),
+  ('TV',            'tv',            '📺'),
+  ('Books',         'books',         '📚'),
 ON CONFLICT (slug) DO NOTHING;

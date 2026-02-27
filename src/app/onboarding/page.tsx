@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import { Check, ArrowRight, Loader2, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
 
 interface Interest {
@@ -18,18 +19,26 @@ const MIN_INTERESTS = 3
 const MAX_INTERESTS = 6
 
 const RELATED_MAP: Record<string, string[]> = {
-  technology:    ['science', 'business', 'entertainment'],
-  sports:        ['health', 'nature'],
-  cooking:       ['health', 'nature', 'travel', 'science'],
-  music:         ['art', 'entertainment', 'literature'],
-  travel:        ['nature', 'art', 'cooking', 'literature'],
-  science:       ['technology', 'nature', 'health'],
-  business:      ['technology', 'literature'],
-  health:        ['sports', 'cooking', 'science', 'nature'],
+  technology: ['science', 'business', 'entertainment'],
+  sports: ['health', 'nature'],
+  cooking: ['health', 'nature', 'travel', 'science'],
+  music: ['art', 'entertainment', 'literature'],
+  travel: ['nature', 'art', 'cooking', 'literature'],
+  science: ['technology', 'nature', 'health'],
+  business: ['technology', 'literature'],
+  health: ['sports', 'cooking', 'science', 'nature'],
   entertainment: ['music', 'art', 'literature', 'technology'],
-  nature:        ['science', 'travel', 'sports', 'health'],
-  art:           ['music', 'literature', 'entertainment'],
-  literature:    ['art', 'music', 'business', 'travel'],
+  nature: ['science', 'travel', 'sports', 'health'],
+  art: ['music', 'literature', 'entertainment'],
+  literature: ['art', 'music', 'business', 'travel'],
+  fitness: ['health', 'sports', 'nature'],
+  finance: ['business', 'health', 'literature'],
+  programming: ['technology', 'literature', 'business'],
+  history: ['literature', 'business', 'science'],
+  geography: ['literature', 'business', 'science'],
+  movies: ['entertainment', 'literature', 'art'],
+  tv: ['entertainment', 'literature', 'art'],
+  books: ['literature', 'business', 'science'],
 }
 
 type CardCategory = 'selected' | 'suggested' | 'other'
@@ -42,11 +51,13 @@ function InterestCard({
   category,
   onToggle,
   isMaxed,
+  forYouLabel,
 }: {
   interest: Interest
   category: CardCategory
   onToggle: (id: string) => void
   isMaxed: boolean
+  forYouLabel: string
 }) {
   const isSelected = category === 'selected'
   const isSuggested = category === 'suggested'
@@ -55,8 +66,8 @@ function InterestCard({
   const borderClass = isSelected
     ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40'
     : isSuggested
-    ? 'border-amber-300/70 bg-amber-50/50 hover:border-amber-400 hover:bg-amber-50 dark:bg-amber-950/20 dark:hover:bg-amber-950/40'
-    : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted/40'
+      ? 'border-amber-300/70 bg-amber-50/50 hover:border-amber-400 hover:bg-amber-50 dark:bg-amber-950/20 dark:hover:bg-amber-950/40'
+      : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted/40'
 
   return (
     <motion.button
@@ -100,7 +111,7 @@ function InterestCard({
             exit={{ opacity: 0, scale: 0.7 }}
             transition={{ duration: 0.2 }}
           >
-            Para ti
+            {forYouLabel}
           </motion.span>
         )}
       </AnimatePresence>
@@ -150,11 +161,12 @@ export default function OnboardingPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const t = useTranslations('onboarding')
 
   useEffect(() => {
     fetch('/api/interests')
-      .then(r => r.json())
-      .then(data => {
+      .then((r) => r.json())
+      .then((data) => {
         setInterests(data.all || [])
         if (data.selected?.length) {
           setSelected(new Set(data.selected))
@@ -164,7 +176,7 @@ export default function OnboardingPage() {
   }, [])
 
   const toggleInterest = (id: string) => {
-    setSelected(prev => {
+    setSelected((prev) => {
       const next = new Set(prev)
       if (next.has(id)) {
         next.delete(id)
@@ -177,13 +189,19 @@ export default function OnboardingPage() {
 
   const { selectedList, suggestedList, otherList } = useMemo(() => {
     const selIds = new Set(selected)
-    const selSlugs = interests.filter(i => selIds.has(i.id)).map(i => i.slug)
-    const sugSlugSet = new Set(selSlugs.flatMap(s => RELATED_MAP[s] ?? []))
+    const selSlugs = interests
+      .filter((i) => selIds.has(i.id))
+      .map((i) => i.slug)
+    const sugSlugSet = new Set(selSlugs.flatMap((s) => RELATED_MAP[s] ?? []))
 
     return {
-      selectedList:  interests.filter(i => selIds.has(i.id)),
-      suggestedList: interests.filter(i => !selIds.has(i.id) && sugSlugSet.has(i.slug)),
-      otherList:     interests.filter(i => !selIds.has(i.id) && !sugSlugSet.has(i.slug)),
+      selectedList: interests.filter((i) => selIds.has(i.id)),
+      suggestedList: interests.filter(
+        (i) => !selIds.has(i.id) && sugSlugSet.has(i.slug),
+      ),
+      otherList: interests.filter(
+        (i) => !selIds.has(i.id) && !sugSlugSet.has(i.slug),
+      ),
     }
   }, [interests, selected])
 
@@ -203,22 +221,23 @@ export default function OnboardingPage() {
       router.push('/')
       router.refresh()
     } catch {
-      toast.error('No se pudieron guardar los intereses. Inténtalo de nuevo.')
+      toast.error(t('saveFailed'))
     } finally {
       setIsSaving(false)
     }
   }
 
-  const isMaxed   = selected.size >= MAX_INTERESTS
+  const isMaxed = selected.size >= MAX_INTERESTS
   const remaining = Math.max(0, MIN_INTERESTS - selected.size)
   const canContinue = selected.size >= MIN_INTERESTS
 
   // Hint text that changes as the user selects
-  const hintText = remaining > 0
-    ? `Selecciona ${remaining} tema${remaining !== 1 ? 's' : ''} más para continuar`
-    : isMaxed
-    ? '¡Máximo alcanzado! Continúa cuando quieras.'
-    : `Puedes añadir ${MAX_INTERESTS - selected.size} más o continuar ahora`
+  const hintText =
+    remaining > 0
+      ? t('selectMoreTopics', { remaining })
+      : isMaxed
+        ? t('maxReached')
+        : t('canAddMore', { remaining: MAX_INTERESTS - selected.size })
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -228,10 +247,10 @@ export default function OnboardingPage() {
           <div className="flex items-start gap-4">
             <div className="flex-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                VocabFlow · Configuración inicial
+                VocabFlow · {t('initialSetup')}
               </p>
               <h1 className="mt-0.5 text-xl font-bold tracking-tight">
-                ¿Qué te interesa aprender?
+                {t('whatInterests')}
               </h1>
               <AnimatePresence mode="wait">
                 <motion.p
@@ -259,8 +278,8 @@ export default function OnboardingPage() {
                       backgroundColor:
                         i < selected.size
                           ? i < MIN_INTERESTS
-                            ? '#10b981'   // emerald-500
-                            : '#f59e0b'   // amber-500
+                            ? '#10b981' // emerald-500
+                            : '#f59e0b' // amber-500
                           : 'hsl(var(--border))',
                     }}
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
@@ -285,7 +304,6 @@ export default function OnboardingPage() {
           ) : (
             <LayoutGroup id="interests-grid">
               <motion.div layout className="space-y-8">
-
                 {/* ── Selected section ─────────────────────────────────── */}
                 <AnimatePresence>
                   {selectedList.length > 0 && (
@@ -300,20 +318,21 @@ export default function OnboardingPage() {
                       <AnimatePresence>
                         <SectionHeading
                           key="selected-heading"
-                          label="Tus temas"
+                          label={t('yourTopics')}
                           icon={<Check className="h-3 w-3" strokeWidth={3} />}
                           className="text-emerald-600 dark:text-emerald-400"
                         />
                       </AnimatePresence>
                       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                         <AnimatePresence mode="popLayout">
-                          {selectedList.map(interest => (
+                          {selectedList.map((interest) => (
                             <InterestCard
                               key={interest.id}
                               interest={interest}
                               category="selected"
                               onToggle={toggleInterest}
                               isMaxed={isMaxed}
+                              forYouLabel={t('forYou')}
                             />
                           ))}
                         </AnimatePresence>
@@ -336,20 +355,21 @@ export default function OnboardingPage() {
                       <AnimatePresence>
                         <SectionHeading
                           key="suggested-heading"
-                          label="También te puede gustar"
+                          label={t('alsoLike')}
                           icon={<Sparkles className="h-3 w-3" />}
                           className="text-amber-600 dark:text-amber-400"
                         />
                       </AnimatePresence>
                       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                         <AnimatePresence mode="popLayout">
-                          {suggestedList.map(interest => (
+                          {suggestedList.map((interest) => (
                             <InterestCard
                               key={interest.id}
                               interest={interest}
                               category="suggested"
                               onToggle={toggleInterest}
                               isMaxed={isMaxed}
+                              forYouLabel={t('forYou')}
                             />
                           ))}
                         </AnimatePresence>
@@ -365,32 +385,34 @@ export default function OnboardingPage() {
                       <AnimatePresence>
                         <SectionHeading
                           key="more-heading"
-                          label="Más temas"
+                          label={t('moreTopics')}
                           className="text-muted-foreground"
                         />
                       </AnimatePresence>
                     ) : (
                       <p className="mb-4 text-sm text-muted-foreground">
-                        Elige {MIN_INTERESTS}–{MAX_INTERESTS} temas para personalizar tu vocabulario.
-                        Verás sugerencias relacionadas a medida que elijas.
+                        {t('chooseTopics', {
+                          min: MIN_INTERESTS,
+                          max: MAX_INTERESTS,
+                        })}
                       </p>
                     )}
                     <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                       <AnimatePresence mode="popLayout">
-                        {otherList.map(interest => (
+                        {otherList.map((interest) => (
                           <InterestCard
                             key={interest.id}
                             interest={interest}
                             category="other"
                             onToggle={toggleInterest}
                             isMaxed={isMaxed}
+                            forYouLabel={t('forYou')}
                           />
                         ))}
                       </AnimatePresence>
                     </div>
                   </motion.div>
                 )}
-
               </motion.div>
             </LayoutGroup>
           )}
@@ -428,7 +450,7 @@ export default function OnboardingPage() {
               ) : (
                 <ArrowRight className="h-4 w-4" />
               )}
-              {isSaving ? 'Guardando…' : 'Continuar'}
+              {isSaving ? t('saving') : t('continue')}
             </motion.button>
           </div>
         </div>

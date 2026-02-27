@@ -15,6 +15,7 @@ export interface Profile {
   last_session_date: string | null;
   daily_word_count: number;
   preferred_difficulty: "beginner" | "intermediate" | "advanced";
+  preferred_language: "es" | "en";
   created_at: string;
   updated_at: string;
 }

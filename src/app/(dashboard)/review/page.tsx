@@ -7,6 +7,7 @@ import { ReviewComplete } from '@/components/review/review-complete'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { RotateCcw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function ReviewPage() {
   const {
@@ -19,6 +20,7 @@ export default function ReviewPage() {
     submitReview,
     flipCard,
   } = useReview()
+  const t = useTranslations('review')
 
   if (isLoading) {
     return (
@@ -40,13 +42,13 @@ export default function ReviewPage() {
   if (words.length === 0) {
     return (
       <div className="mx-auto max-w-2xl space-y-4 p-4 md:p-6">
-        <h1 className="text-2xl font-bold">Review</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         <div className="flex flex-col items-center gap-4 py-12">
           <RotateCcw className="h-12 w-12 text-muted-foreground/50" />
           <div className="text-center">
-            <p className="font-medium">No words to review</p>
+            <p className="font-medium">{t('noWords')}</p>
             <p className="text-sm text-muted-foreground">
-              Learn new words first, then come back to review them.
+              {t('noWordsHint')}
             </p>
           </div>
         </div>
@@ -68,9 +70,9 @@ export default function ReviewPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-bold">Review</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         <p className="text-sm text-muted-foreground">
-          {completedCount} of {words.length} reviewed
+          {t('reviewedOf', { completed: completedCount, total: words.length })}
         </p>
       </div>
 
@@ -94,7 +96,7 @@ export default function ReviewPage() {
 
       {!isFlipped && (
         <p className="text-center text-sm text-muted-foreground">
-          Tap the card to reveal the answer
+          {t('tapCard')}
         </p>
       )}
     </div>

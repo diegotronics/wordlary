@@ -17,6 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { OAuthButton } from "@/components/auth/oauth-button";
 import { Mail, Lock, User, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const googleAuthEnabled =
   process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
@@ -28,6 +29,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const t = useTranslations('auth');
+  const tc = useTranslations('common');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,20 +74,19 @@ export default function RegisterPage() {
     return (
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Check your email</CardTitle>
+          <CardTitle className="text-xl">{t('checkEmail')}</CardTitle>
           <CardDescription>
-            We sent a confirmation link to <strong>{email}</strong>. Click the
-            link in the email to activate your account.
+            {t('confirmationSent', { email })}
           </CardDescription>
         </CardHeader>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Already confirmed?{" "}
+            {t('alreadyConfirmed')}{" "}
             <Link
               href="/login"
               className="font-medium text-primary underline-offset-4 hover:underline"
             >
-              Sign in
+              {t('signIn')}
             </Link>
           </p>
         </CardFooter>
@@ -95,8 +97,8 @@ export default function RegisterPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Create your account</CardTitle>
-        <CardDescription>Start building your vocabulary today</CardDescription>
+        <CardTitle className="text-xl">{t('createAccount')}</CardTitle>
+        <CardDescription>{t('startLearning')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
@@ -106,13 +108,13 @@ export default function RegisterPage() {
             </div>
           )}
           <div className="grid gap-2">
-            <Label htmlFor="display-name">Display name</Label>
+            <Label htmlFor="display-name">{t('displayName')}</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="display-name"
                 type="text"
-                placeholder="Your name"
+                placeholder={t('displayNamePlaceholder')}
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="pl-9"
@@ -122,13 +124,13 @@ export default function RegisterPage() {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{tc('email')}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-9"
@@ -138,13 +140,13 @@ export default function RegisterPage() {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{tc('password')}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="password"
                 type="password"
-                placeholder="At least 6 characters"
+                placeholder={t('passwordMinLength')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-9"
@@ -156,7 +158,7 @@ export default function RegisterPage() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="animate-spin" />}
-            Create account
+            {t('createAccountButton')}
           </Button>
         </form>
 
@@ -168,14 +170,14 @@ export default function RegisterPage() {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">
-                  or continue with
+                  {t('orContinueWith')}
                 </span>
               </div>
             </div>
 
             <OAuthButton
               provider="google"
-              label="Sign up with Google"
+              label={t('signUpWithGoogle')}
               onClick={handleGoogleOAuth}
             />
           </>
@@ -183,12 +185,12 @@ export default function RegisterPage() {
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
-          Already have an account?{" "}
+          {t('haveAccount')}{" "}
           <Link
             href="/login"
             className="font-medium text-primary underline-offset-4 hover:underline"
           >
-            Sign in
+            {t('signIn')}
           </Link>
         </p>
       </CardFooter>

@@ -327,5 +327,16 @@ INSERT INTO public.interests (name, slug, emoji) VALUES
   ('Entertainment', 'entertainment', '🎬'),
   ('Nature',        'nature',        '🌿'),
   ('Art',           'art',           '🎨'),
-  ('Literature',    'literature',    '📚')
+  ('Literature',    'literature',    '📚'),
+  ('Fitness',       'fitness',       '🏋️'),
+  ('Finance',       'finance',       '💰'),
+  ('Programming',   'programming',   '💻'),
+  ('History',       'history',       '📜'),
+  ('Geography',     'geography',     '🌍'),
+  ('Art',           'art',           '🎨'),
+  ('Literature',    'literature',    '📚'),
+  ('Music',         'music',         '🎵'),
+  ('Movies',        'movies',        '🎥'),
+  ('TV',            'tv',            '📺'),
+  ('Books',         'books',         '📚'),
 ON CONFLICT (slug) DO NOTHING;

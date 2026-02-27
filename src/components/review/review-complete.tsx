@@ -5,12 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle, Home, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface ReviewCompleteProps {
   totalReviewed: number
 }
 
 export function ReviewComplete({ totalReviewed }: ReviewCompleteProps) {
+  const t = useTranslations('review')
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -29,11 +32,9 @@ export function ReviewComplete({ totalReviewed }: ReviewCompleteProps) {
           </motion.div>
 
           <div>
-            <h2 className="text-2xl font-bold">Reviews Done!</h2>
+            <h2 className="text-2xl font-bold">{t('reviewsDone')}</h2>
             <p className="mt-2 text-muted-foreground">
-              You reviewed{' '}
-              <span className="font-semibold text-foreground">{totalReviewed}</span> words.
-              Keep it up!
+              {t('reviewedWords', { count: totalReviewed })}
             </p>
           </div>
 
@@ -41,13 +42,13 @@ export function ReviewComplete({ totalReviewed }: ReviewCompleteProps) {
             <Button asChild className="w-full">
               <Link href="/">
                 <Home className="mr-2 h-4 w-4" />
-                Back to Home
+                {t('backToHome')}
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
               <Link href="/progress">
                 <BarChart3 className="mr-2 h-4 w-4" />
-                View Progress
+                {t('viewProgress')}
               </Link>
             </Button>
           </div>

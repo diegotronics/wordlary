@@ -1,20 +1,23 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useTranslations } from 'next-intl'
 
 interface DifficultyButtonsProps {
   onRate: (quality: 0 | 1 | 3 | 5) => void
   disabled?: boolean
 }
 
-const buttons = [
-  { quality: 0 as const, label: 'Again', description: 'Forgot', variant: 'destructive' as const },
-  { quality: 1 as const, label: 'Hard', description: 'Struggled', variant: 'outline' as const },
-  { quality: 3 as const, label: 'Good', description: 'Recalled', variant: 'outline' as const },
-  { quality: 5 as const, label: 'Easy', description: 'Instant', variant: 'default' as const },
-]
-
 export function DifficultyButtons({ onRate, disabled }: DifficultyButtonsProps) {
+  const t = useTranslations('review')
+
+  const buttons = [
+    { quality: 0 as const, label: t('again'), description: t('forgot'), variant: 'destructive' as const },
+    { quality: 1 as const, label: t('hard'), description: t('struggled'), variant: 'outline' as const },
+    { quality: 3 as const, label: t('good'), description: t('recalled'), variant: 'outline' as const },
+    { quality: 5 as const, label: t('easy'), description: t('instant'), variant: 'default' as const },
+  ]
+
   return (
     <div className="grid grid-cols-4 gap-2">
       {buttons.map((btn) => (

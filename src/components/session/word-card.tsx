@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Volume2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface WordCardProps {
   word: string
@@ -24,6 +24,7 @@ export function WordCard({
   isLearned,
 }: WordCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
+  const t = useTranslations('session')
 
   return (
     <div
@@ -43,7 +44,7 @@ export function WordCard({
         >
           {isLearned && (
             <div className="absolute right-4 top-4 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-              Learned
+              {t('learnedBadge')}
             </div>
           )}
           <span className="mb-1 rounded-full bg-muted px-3 py-0.5 text-xs text-muted-foreground">
@@ -54,7 +55,7 @@ export function WordCard({
           <div className="mt-6 rounded-lg bg-muted/50 p-3">
             <p className="text-center text-sm leading-relaxed">&ldquo;{exampleSentence}&rdquo;</p>
           </div>
-          <p className="mt-6 text-xs text-muted-foreground">Tap to see translation</p>
+          <p className="mt-6 text-xs text-muted-foreground">{t('tapToTranslate')}</p>
         </div>
 
         {/* Back - Spanish */}
@@ -62,12 +63,12 @@ export function WordCard({
           className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 shadow-lg"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
-          <span className="mb-1 text-xs text-muted-foreground">Traduccion</span>
+          <span className="mb-1 text-xs text-muted-foreground">{t('translation')}</span>
           <h2 className="mt-2 text-3xl font-bold text-primary">{wordEs}</h2>
           <div className="mt-6 rounded-lg bg-background/80 p-3">
             <p className="text-center text-sm leading-relaxed">&ldquo;{sentenceEs}&rdquo;</p>
           </div>
-          <p className="mt-6 text-xs text-muted-foreground">Tap to see English</p>
+          <p className="mt-6 text-xs text-muted-foreground">{t('tapToEnglish')}</p>
         </div>
       </motion.div>
     </div>

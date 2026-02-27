@@ -1,8 +1,12 @@
-export default function AuthLayout({
+import { getTranslations } from 'next-intl/server'
+
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = await getTranslations('auth')
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
       <div className="w-full max-w-md">
@@ -11,7 +15,7 @@ export default function AuthLayout({
             📖 VocabFlow
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Master English vocabulary, one word at a time
+            {t('tagline')}
           </p>
         </div>
         {children}

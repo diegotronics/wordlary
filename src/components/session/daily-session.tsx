@@ -7,6 +7,7 @@ import { SessionComplete } from './session-complete'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export function DailySession() {
   const {
@@ -20,6 +21,8 @@ export function DailySession() {
     nextWord,
     previousWord,
   } = useSession()
+  const t = useTranslations('session')
+  const tc = useTranslations('common')
 
   if (isLoading || isGenerating) {
     return (
@@ -34,7 +37,7 @@ export function DailySession() {
         {isGenerating && (
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Generating your personalized vocabulary...</span>
+            <span>{t('generating')}</span>
           </div>
         )}
       </div>
@@ -46,7 +49,7 @@ export function DailySession() {
       <div className="flex flex-col items-center gap-4 py-12">
         <p className="text-destructive">{error}</p>
         <Button onClick={() => window.location.reload()} variant="outline">
-          Try Again
+          {tc('tryAgain')}
         </Button>
       </div>
     )
@@ -55,7 +58,7 @@ export function DailySession() {
   if (!session || words.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-12">
-        <p className="text-muted-foreground">No session available. Check back later.</p>
+        <p className="text-muted-foreground">{t('noSession')}</p>
       </div>
     )
   }
@@ -98,14 +101,14 @@ export function DailySession() {
         {!currentWord.is_learned && (
           <Button onClick={() => markWordLearned(currentWord.id)} className="px-6">
             <Check className="mr-2 h-4 w-4" />
-            Mark as Learned
+            {t('markAsLearned')}
           </Button>
         )}
 
         {currentWord.is_learned && (
           <Button variant="secondary" disabled className="px-6">
             <Check className="mr-2 h-4 w-4" />
-            Learned
+            {t('learnedBadge')}
           </Button>
         )}
 
