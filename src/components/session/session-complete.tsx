@@ -3,15 +3,16 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { PartyPopper, RotateCcw, BarChart3 } from 'lucide-react'
+import { PartyPopper, RotateCcw, BarChart3, Home } from 'lucide-react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
 interface SessionCompleteProps {
   wordsLearned: number
+  onPracticeAgain?: () => void
 }
 
-export function SessionComplete({ wordsLearned }: SessionCompleteProps) {
+export function SessionComplete({ wordsLearned, onPracticeAgain }: SessionCompleteProps) {
   const t = useTranslations('session')
 
   return (
@@ -43,7 +44,13 @@ export function SessionComplete({ wordsLearned }: SessionCompleteProps) {
           </p>
 
           <div className="flex flex-col gap-3">
-            <Button asChild className="w-full">
+            {onPracticeAgain && (
+              <Button onClick={onPracticeAgain} className="w-full">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                {t('practiceAgain')}
+              </Button>
+            )}
+            <Button asChild variant={onPracticeAgain ? 'outline' : 'default'} className="w-full">
               <Link href="/review">
                 <RotateCcw className="mr-2 h-4 w-4" />
                 {t('reviewWords')}
@@ -53,6 +60,12 @@ export function SessionComplete({ wordsLearned }: SessionCompleteProps) {
               <Link href="/progress">
                 <BarChart3 className="mr-2 h-4 w-4" />
                 {t('viewProgress')}
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="w-full">
+              <Link href="/">
+                <Home className="mr-2 h-4 w-4" />
+                {t('backToHome')}
               </Link>
             </Button>
           </div>

@@ -79,7 +79,15 @@
     "learnDaily": "Learn new vocabulary every day",
     "due": "{count} due",
     "wordsLearned": "Words Learned",
-    "sessionsCompleted": "{count} sessions completed"
+    "sessionsCompleted": "{count} sessions completed",
+    "startPractice": "Start Practice",
+    "continuePractice": "Continue Practice",
+    "practiceAgain": "Practice Again",
+    "readyToLearn": "Ready to learn?",
+    "readyToLearnMessage": "{count} new words are waiting for you",
+    "inProgress": "In progress",
+    "sessionDone": "Session Complete!",
+    "sessionDoneMessage": "You learned all {count} words today"
   },
   "session": {
     "generating": "Generating your personalized vocabulary...",
@@ -95,7 +103,9 @@
     "sessionCompleteMessage": "You learned {count} new words today. Great work!",
     "comeBackTomorrow": "Come back tomorrow for new words. Your learned words will appear in review sessions based on spaced repetition.",
     "reviewWords": "Review Words",
-    "viewProgress": "View Progress"
+    "viewProgress": "View Progress",
+    "practiceAgain": "Practice Again",
+    "backToHome": "Back to Home"
   },
   "review": {
     "title": "Review",

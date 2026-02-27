@@ -79,7 +79,15 @@
     "learnDaily": "Aprende vocabulario nuevo cada día",
     "due": "{count} pendientes",
     "wordsLearned": "Palabras aprendidas",
-    "sessionsCompleted": "{count} sesiones completadas"
+    "sessionsCompleted": "{count} sesiones completadas",
+    "startPractice": "Comenzar práctica",
+    "continuePractice": "Continuar práctica",
+    "practiceAgain": "Practicar de nuevo",
+    "readyToLearn": "¿Listo para aprender?",
+    "readyToLearnMessage": "{count} palabras nuevas te esperan",
+    "inProgress": "En progreso",
+    "sessionDone": "¡Sesión completada!",
+    "sessionDoneMessage": "Aprendiste las {count} palabras de hoy"
   },
   "session": {
     "generating": "Generando tu vocabulario personalizado...",
@@ -95,7 +103,9 @@
     "sessionCompleteMessage": "Aprendiste {count} palabras nuevas hoy. ¡Buen trabajo!",
     "comeBackTomorrow": "Vuelve mañana para nuevas palabras. Tus palabras aprendidas aparecerán en sesiones de repaso basadas en repetición espaciada.",
     "reviewWords": "Repasar palabras",
-    "viewProgress": "Ver progreso"
+    "viewProgress": "Ver progreso",
+    "practiceAgain": "Practicar de nuevo",
+    "backToHome": "Volver al inicio"
   },
   "review": {
     "title": "Repaso",
