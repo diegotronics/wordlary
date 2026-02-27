@@ -101,6 +101,21 @@ export interface GeneratedWord {
 }
 
 // ---------------------------------------------------------------------------
+// Platform Word Bank
+// ---------------------------------------------------------------------------
+export interface WordBankEntry {
+  id: string;
+  word: string;
+  ipa: string;
+  example_sentence: string;
+  word_es: string;
+  sentence_es: string;
+  interest_slug: string;
+  difficulty_level: "beginner" | "intermediate" | "advanced";
+  created_at: string;
+}
+
+// ---------------------------------------------------------------------------
 // Spaced Repetition Review Quality Ratings
 // ---------------------------------------------------------------------------
 export type ReviewQuality = 0 | 1 | 3 | 5;
