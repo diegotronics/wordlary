@@ -5,12 +5,8 @@ import { ArrowUpDown, ArrowUp, ArrowDown, BookA } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { INTERESTS } from '@/lib/constants'
+import { INTEREST_EMOJI } from '@/lib/constants'
 import type { WordItem } from '@/hooks/use-words'
-
-const interestMap = new Map<string, string>(
-  INTERESTS.map((i) => [i.slug, i.emoji])
-)
 
 interface WordsTableProps {
   words: WordItem[]
@@ -100,7 +96,7 @@ export function WordsTable({ words, isLoading, sort, order, onSort, hasFilters }
                   <td className="px-4 py-3">
                     {word.interest_slug && (
                       <Badge variant="secondary" className="font-normal">
-                        {interestMap.get(word.interest_slug) ?? ''}{' '}
+                        {INTEREST_EMOJI[word.interest_slug] ?? ''}{' '}
                         {ti(word.interest_slug)}
                       </Badge>
                     )}
@@ -139,7 +135,7 @@ export function WordsTable({ words, isLoading, sort, order, onSort, hasFilters }
             <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
               {word.interest_slug && (
                 <span>
-                  {interestMap.get(word.interest_slug) ?? ''} {ti(word.interest_slug)}
+                  {INTEREST_EMOJI[word.interest_slug] ?? ''} {ti(word.interest_slug)}
                 </span>
               )}
               <span className="ml-auto">{formatDate(word.created_at)}</span>

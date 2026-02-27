@@ -7,38 +7,13 @@ import { Check, ArrowRight, Loader2, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
+import { MIN_INTERESTS, MAX_INTERESTS, RELATED_INTERESTS } from '@/lib/constants'
 
 interface Interest {
   id: string
   name: string
   slug: string
   emoji: string
-}
-
-const MIN_INTERESTS = 3
-const MAX_INTERESTS = 6
-
-const RELATED_MAP: Record<string, string[]> = {
-  technology: ['science', 'business', 'entertainment'],
-  sports: ['health', 'nature'],
-  cooking: ['health', 'nature', 'travel', 'science'],
-  music: ['art', 'entertainment', 'literature'],
-  travel: ['nature', 'art', 'cooking', 'literature'],
-  science: ['technology', 'nature', 'health'],
-  business: ['technology', 'literature'],
-  health: ['sports', 'cooking', 'science', 'nature'],
-  entertainment: ['music', 'art', 'literature', 'technology'],
-  nature: ['science', 'travel', 'sports', 'health'],
-  art: ['music', 'literature', 'entertainment'],
-  literature: ['art', 'music', 'business', 'travel'],
-  fitness: ['health', 'sports', 'nature'],
-  finance: ['business', 'health', 'literature'],
-  programming: ['technology', 'literature', 'business'],
-  history: ['literature', 'business', 'science'],
-  geography: ['literature', 'business', 'science'],
-  movies: ['entertainment', 'literature', 'art'],
-  tv: ['entertainment', 'literature', 'art'],
-  books: ['literature', 'business', 'science'],
 }
 
 type CardCategory = 'selected' | 'suggested' | 'other'
@@ -192,7 +167,7 @@ export default function OnboardingPage() {
     const selSlugs = interests
       .filter((i) => selIds.has(i.id))
       .map((i) => i.slug)
-    const sugSlugSet = new Set(selSlugs.flatMap((s) => RELATED_MAP[s] ?? []))
+    const sugSlugSet = new Set(selSlugs.flatMap((s) => RELATED_INTERESTS[s] ?? []))
 
     return {
       selectedList: interests.filter((i) => selIds.has(i.id)),

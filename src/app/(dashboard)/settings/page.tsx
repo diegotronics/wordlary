@@ -13,6 +13,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { toast } from 'sonner'
 import { useTranslations, useLocale } from 'next-intl'
 import { LanguagePicker } from '@/components/settings/language-picker'
+import { MIN_INTERESTS, MAX_INTERESTS } from '@/lib/constants'
 
 interface Interest {
   id: string
@@ -36,6 +37,7 @@ export default function SettingsPage() {
 
   const t = useTranslations('settings')
   const tc = useTranslations('common')
+  const ti = useTranslations('interests')
 
   const difficultyLevels = [
     { value: 'beginner', label: t('beginner') },
@@ -79,9 +81,9 @@ export default function SettingsPage() {
     setSelectedInterests((prev) => {
       const next = new Set(prev)
       if (next.has(id)) {
-        if (next.size <= 3) return prev
+        if (next.size <= MIN_INTERESTS) return prev
         next.delete(id)
-      } else if (next.size < 6) {
+      } else if (next.size < MAX_INTERESTS) {
         next.add(id)
       }
       return next
@@ -232,7 +234,7 @@ export default function SettingsPage() {
                   }`}
                 >
                   <span>{interest.emoji}</span>
-                  <span className="font-medium">{interest.name}</span>
+                  <span className="font-medium">{ti(interest.slug)}</span>
                 </button>
               )
             })}

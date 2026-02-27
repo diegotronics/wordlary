@@ -11,12 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { INTERESTS } from '@/lib/constants'
-
-// Deduplicate interests by slug
-const UNIQUE_INTERESTS = INTERESTS.filter(
-  (item, index, arr) => arr.findIndex((i) => i.slug === item.slug) === index
-)
+import { INTEREST_SLUGS, INTEREST_EMOJI } from '@/lib/constants'
 
 interface WordsToolbarProps {
   filters: {
@@ -73,9 +68,9 @@ export function WordsToolbar({ filters, onFilterChange }: WordsToolbarProps) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t('allTopics')}</SelectItem>
-            {UNIQUE_INTERESTS.map((interest) => (
-              <SelectItem key={interest.slug} value={interest.slug}>
-                {interest.emoji} {ti(interest.slug)}
+            {INTEREST_SLUGS.map((slug) => (
+              <SelectItem key={slug} value={slug}>
+                {INTEREST_EMOJI[slug]} {ti(slug)}
               </SelectItem>
             ))}
           </SelectContent>

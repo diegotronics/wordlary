@@ -4,32 +4,62 @@
 
 // ---------------------------------------------------------------------------
 // Interest Categories
+// Canonical slug→emoji map. The database `interests` table is the source of
+// truth for the full list (id, name, slug, emoji). This map exists so
+// client-side components can resolve an emoji from a slug without an extra
+// fetch. Display names come from the `interests` i18n namespace.
 // ---------------------------------------------------------------------------
-export const INTERESTS = [
-  { name: 'Technology', slug: 'technology', emoji: '\u{1F4BB}' },
-  { name: 'Sports', slug: 'sports', emoji: '\u26BD' },
-  { name: 'Cooking', slug: 'cooking', emoji: '\u{1F373}' },
-  { name: 'Music', slug: 'music', emoji: '\u{1F3B5}' },
-  { name: 'Travel', slug: 'travel', emoji: '\u2708\uFE0F' },
-  { name: 'Science', slug: 'science', emoji: '\u{1F52C}' },
-  { name: 'Business', slug: 'business', emoji: '\u{1F4BC}' },
-  { name: 'Health', slug: 'health', emoji: '\u{1F3E5}' },
-  { name: 'Entertainment', slug: 'entertainment', emoji: '\u{1F3AC}' },
-  { name: 'Nature', slug: 'nature', emoji: '\u{1F33F}' },
-  { name: 'Art', slug: 'art', emoji: '\u{1F3A8}' },
-  { name: 'Literature', slug: 'literature', emoji: '\u{1F4DA}' },
-  { name: 'Fitness', slug: 'fitness', emoji: '\u{1F3CB}' },
-  { name: 'Finance', slug: 'finance', emoji: '\u{1F4B2}' },
-  { name: 'Programming', slug: 'programming', emoji: '\u{1F4BB}' },
-  { name: 'History', slug: 'history', emoji: '\u{1F4D7}' },
-  { name: 'Geography', slug: 'geography', emoji: '\u{1F30D}' },
-  { name: 'Art', slug: 'art', emoji: '\u{1F3A8}' },
-  { name: 'Literature', slug: 'literature', emoji: '\u{1F4DA}' },
-  { name: 'Music', slug: 'music', emoji: '\u{1F3B5}' },
-  { name: 'Movies', slug: 'movies', emoji: '\u{1F3A5}' },
-  { name: 'TV', slug: 'tv', emoji: '\u{1F4FA}' },
-  { name: 'Books', slug: 'books', emoji: '\u{1F4DA}' },
-] as const
+export const INTEREST_EMOJI: Record<string, string> = {
+  technology: '💻',
+  sports: '⚽',
+  cooking: '🍳',
+  music: '🎵',
+  travel: '✈️',
+  science: '🔬',
+  business: '💼',
+  health: '🏥',
+  entertainment: '🎬',
+  nature: '🌿',
+  art: '🎨',
+  literature: '📚',
+  fitness: '🏋️',
+  finance: '💰',
+  programming: '💻',
+  history: '📜',
+  geography: '🌍',
+  movies: '🎥',
+  tv: '📺',
+  books: '📚',
+}
+
+// Ordered list of all interest slugs (used for filters / dropdowns)
+export const INTEREST_SLUGS = Object.keys(INTEREST_EMOJI)
+
+// ---------------------------------------------------------------------------
+// Related Interests (for onboarding suggestions)
+// ---------------------------------------------------------------------------
+export const RELATED_INTERESTS: Record<string, string[]> = {
+  technology: ['science', 'business', 'entertainment'],
+  sports: ['health', 'nature'],
+  cooking: ['health', 'nature', 'travel', 'science'],
+  music: ['art', 'entertainment', 'literature'],
+  travel: ['nature', 'art', 'cooking', 'literature'],
+  science: ['technology', 'nature', 'health'],
+  business: ['technology', 'literature'],
+  health: ['sports', 'cooking', 'science', 'nature'],
+  entertainment: ['music', 'art', 'literature', 'technology'],
+  nature: ['science', 'travel', 'sports', 'health'],
+  art: ['music', 'literature', 'entertainment'],
+  literature: ['art', 'music', 'business', 'travel'],
+  fitness: ['health', 'sports', 'nature'],
+  finance: ['business', 'health', 'literature'],
+  programming: ['technology', 'literature', 'business'],
+  history: ['literature', 'business', 'science'],
+  geography: ['literature', 'business', 'science'],
+  movies: ['entertainment', 'literature', 'art'],
+  tv: ['entertainment', 'literature', 'art'],
+  books: ['literature', 'business', 'science'],
+}
 
 // ---------------------------------------------------------------------------
 // Interest Selection Limits
