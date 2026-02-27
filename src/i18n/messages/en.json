@@ -16,7 +16,8 @@
     "home": "Home",
     "review": "Review",
     "progress": "Progress",
-    "settings": "Settings"
+    "settings": "Settings",
+    "words": "Words"
   },
   "auth": {
     "tagline": "Master English vocabulary, one word at a time",
@@ -132,6 +133,27 @@
     "savedError": "Failed to save settings",
     "language": "App Language",
     "languageHint": "Change the interface language"
+  },
+  "words": {
+    "title": "My Words",
+    "searchPlaceholder": "Search words or translations...",
+    "allTopics": "All topics",
+    "allStatus": "All",
+    "learned": "Learned",
+    "inProgress": "In progress",
+    "columnWord": "Word",
+    "columnTranslation": "Translation",
+    "columnTopic": "Topic",
+    "columnStatus": "Status",
+    "columnDate": "Date Added",
+    "noWords": "No words yet",
+    "noWordsHint": "Complete your daily sessions to start building your vocabulary.",
+    "noResults": "No words match your search",
+    "noResultsHint": "Try a different search term or adjust your filters.",
+    "pageOf": "Page {page} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "showingCount": "{count} words"
   },
   "interests": {
     "technology": "Technology",

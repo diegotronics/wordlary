@@ -16,7 +16,8 @@
     "home": "Inicio",
     "review": "Repaso",
     "progress": "Progreso",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "words": "Palabras"
   },
   "auth": {
     "tagline": "Domina el vocabulario en inglés, una palabra a la vez",
@@ -132,6 +133,27 @@
     "savedError": "No se pudieron guardar los ajustes",
     "language": "Idioma de la app",
     "languageHint": "Cambia el idioma de la interfaz"
+  },
+  "words": {
+    "title": "Mis Palabras",
+    "searchPlaceholder": "Buscar palabras o traducciones...",
+    "allTopics": "Todos los temas",
+    "allStatus": "Todos",
+    "learned": "Aprendida",
+    "inProgress": "En progreso",
+    "columnWord": "Palabra",
+    "columnTranslation": "Traduccion",
+    "columnTopic": "Tema",
+    "columnStatus": "Estado",
+    "columnDate": "Fecha",
+    "noWords": "Aun no tienes palabras",
+    "noWordsHint": "Completa tus sesiones diarias para empezar a construir tu vocabulario.",
+    "noResults": "Ninguna palabra coincide con tu busqueda",
+    "noResultsHint": "Prueba con otro termino o ajusta los filtros.",
+    "pageOf": "Pagina {page} de {total}",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "showingCount": "{count} palabras"
   },
   "interests": {
     "technology": "Tecnología",

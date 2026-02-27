@@ -31,10 +31,11 @@ export default function SettingsPage() {
   const [difficulty, setDifficulty] = useState('intermediate')
   const [allInterests, setAllInterests] = useState<Interest[]>([])
   const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set())
+  const currentLocale = useLocale()
+  const [selectedLocale, setSelectedLocale] = useState(currentLocale)
 
   const t = useTranslations('settings')
   const tc = useTranslations('common')
-  const locale = useLocale()
 
   const difficultyLevels = [
     { value: 'beginner', label: t('beginner') },
@@ -112,6 +113,16 @@ export default function SettingsPage() {
         body: JSON.stringify({ interest_ids: Array.from(selectedInterests) }),
       })
       if (!interestsRes.ok) throw new Error('Failed to save interests')
+
+      if (selectedLocale !== currentLocale) {
+        await fetch('/api/locale', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ locale: selectedLocale }),
+        })
+        router.refresh()
+        return
+      }
 
       toast.success(t('savedSuccess'))
     } catch {
@@ -197,7 +208,7 @@ export default function SettingsPage() {
           <CardDescription>{t('languageHint')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <LanguagePicker currentLocale={locale} />
+          <LanguagePicker value={selectedLocale} onChange={setSelectedLocale} />
         </CardContent>
       </Card>
 

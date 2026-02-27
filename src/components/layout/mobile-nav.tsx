@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, RotateCcw, BarChart3, Settings } from 'lucide-react'
+import { Home, RotateCcw, BookA, BarChart3, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 
@@ -13,6 +13,7 @@ export function MobileNav() {
   const navItems = [
     { href: '/', label: t('home'), icon: Home },
     { href: '/review', label: t('review'), icon: RotateCcw },
+    { href: '/words', label: t('words'), icon: BookA },
     { href: '/progress', label: t('progress'), icon: BarChart3 },
     { href: '/settings', label: t('settings'), icon: Settings },
   ]

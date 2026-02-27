@@ -86,7 +86,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
         throw new Error('Failed to submit review')
       }
 
-      const { currentIndex, words, completedCount } = get()
+      const { currentIndex, completedCount } = get()
       const nextIndex = currentIndex + 1
       set({
         currentIndex: nextIndex,
