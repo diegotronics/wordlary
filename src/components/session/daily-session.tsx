@@ -81,6 +81,7 @@ export function DailySession() {
       />
 
       <WordCard
+        key={currentWord.id}
         word={currentWord.word}
         ipa={currentWord.ipa}
         exampleSentence={currentWord.example_sentence}
