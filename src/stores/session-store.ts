@@ -26,6 +26,7 @@ interface SessionStore {
   currentIndex: number
   isLoading: boolean
   isGenerating: boolean
+  isPracticing: boolean
   error: string | null
 
   fetchSession: () => Promise<void>
@@ -33,6 +34,7 @@ interface SessionStore {
   markWordLearned: (wordId: string) => Promise<void>
   nextWord: () => void
   previousWord: () => void
+  restartSession: () => void
   reset: () => void
 }
 
@@ -42,6 +44,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   currentIndex: 0,
   isLoading: false,
   isGenerating: false,
+  isPracticing: false,
   error: null,
 
   fetchSession: async () => {
@@ -138,6 +141,10 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
   },
 
+  restartSession: () => {
+    set({ currentIndex: 0, isPracticing: true })
+  },
+
   reset: () => {
     set({
       session: null,
@@ -145,6 +152,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       currentIndex: 0,
       isLoading: false,
       isGenerating: false,
+      isPracticing: false,
       error: null,
     })
   },

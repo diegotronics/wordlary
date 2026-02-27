@@ -16,10 +16,12 @@ export function DailySession() {
     currentIndex,
     isLoading,
     isGenerating,
+    isPracticing,
     error,
     markWordLearned,
     nextWord,
     previousWord,
+    restartSession,
   } = useSession()
   const t = useTranslations('session')
   const tc = useTranslations('common')
@@ -63,8 +65,8 @@ export function DailySession() {
     )
   }
 
-  if (session.is_completed) {
-    return <SessionComplete wordsLearned={session.words_completed} />
+  if (session.is_completed && !isPracticing) {
+    return <SessionComplete wordsLearned={session.words_completed} onPracticeAgain={restartSession} />
   }
 
   const currentWord = words[currentIndex]
