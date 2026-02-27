@@ -91,9 +91,11 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { interest_ids, complete_onboarding } = body as {
+    const { interest_ids, complete_onboarding, daily_word_count, preferred_difficulty } = body as {
       interest_ids: string[]
       complete_onboarding?: boolean
+      daily_word_count?: number
+      preferred_difficulty?: 'beginner' | 'intermediate' | 'advanced'
     }
 
     // Validate interest_ids
@@ -139,11 +141,20 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // If completing onboarding, update the profile flag
+    // If completing onboarding, update the profile flag and preferences
     if (complete_onboarding) {
+      const profileUpdate: Record<string, unknown> = { onboarding_completed: true }
+
+      if (daily_word_count && daily_word_count >= 5 && daily_word_count <= 20) {
+        profileUpdate.daily_word_count = daily_word_count
+      }
+      if (preferred_difficulty && ['beginner', 'intermediate', 'advanced'].includes(preferred_difficulty)) {
+        profileUpdate.preferred_difficulty = preferred_difficulty
+      }
+
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ onboarding_completed: true })
+        .update(profileUpdate)
         .eq('id', user.id)
 
       if (profileError) {
