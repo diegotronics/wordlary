@@ -49,7 +49,7 @@ Hooks in `src/hooks/` wrap these stores and trigger initial data fetching on mou
 
 ### Database
 
-Schema lives in `supabase/schema.sql`. Key tables: `profiles`, `interests` (12 seeded categories), `user_interests`, `daily_sessions` (unique per user+date), `learned_words` (unique on user+LOWER(word)), `review_schedule` (SM-2 data). Trigger `handle_new_user()` auto-creates a profile row on auth signup.
+Schema is managed exclusively through incremental migrations in `supabase/migrations/`. There is no standalone schema file — migrations are the single source of truth. To see the full current schema, run `supabase db dump`. Key tables: `profiles`, `interests` (12 seeded categories), `user_interests`, `daily_sessions` (unique per user+date), `learned_words` (unique on user+LOWER(word)), `review_schedule` (SM-2 data). Trigger `handle_new_user()` auto-creates a profile row on auth signup.
 
 ### Layout
 
