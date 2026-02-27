@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [confirmationRequired, setConfirmationRequired] = useState(false);
+  const router = useRouter();
   const t = useTranslations('auth');
   const tc = useTranslations('common');
 
@@ -39,7 +41,7 @@ export default function RegisterPage() {
 
     const supabase = createClient();
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -55,7 +57,12 @@ export default function RegisterPage() {
       return;
     }
 
-    setSuccess(true);
+    if (data.session) {
+      router.push("/");
+      return;
+    }
+
+    setConfirmationRequired(true);
     setLoading(false);
   };
 
@@ -70,7 +77,7 @@ export default function RegisterPage() {
     });
   };
 
-  if (success) {
+  if (confirmationRequired) {
     return (
       <Card>
         <CardHeader className="text-center">
