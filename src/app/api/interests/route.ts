@@ -148,6 +148,10 @@ export async function PUT(request: NextRequest) {
 
       if (profileError) {
         console.error('Failed to update onboarding status:', profileError)
+        return NextResponse.json(
+          { error: 'Failed to complete onboarding' },
+          { status: 500 }
+        )
       }
     }
 

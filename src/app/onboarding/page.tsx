@@ -3,9 +3,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
-import { Check, ArrowRight, Loader2, Sparkles } from 'lucide-react'
+import { Check, ArrowRight, Loader2, Sparkles, LogOut } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { createBrowserClient } from '@supabase/ssr'
 import type { ReactNode } from 'react'
 import { MIN_INTERESTS, MAX_INTERESTS, RELATED_INTERESTS } from '@/lib/constants'
 
@@ -137,6 +138,17 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const t = useTranslations('onboarding')
+  const tc = useTranslations('common')
+
+  const handleLogout = async () => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   useEffect(() => {
     fetch('/api/interests')
@@ -221,9 +233,18 @@ export default function OnboardingPage() {
         <div className="mx-auto max-w-2xl px-4 py-4">
           <div className="flex items-start gap-4">
             <div className="flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                VocabFlow · {t('initialSetup')}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                  VocabFlow · {t('initialSetup')}
+                </p>
+                <button
+                  onClick={handleLogout}
+                  className="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+                >
+                  <LogOut className="h-3 w-3" />
+                  {tc('signOut')}
+                </button>
+              </div>
               <h1 className="mt-0.5 text-xl font-bold tracking-tight">
                 {t('whatInterests')}
               </h1>
@@ -241,8 +262,15 @@ export default function OnboardingPage() {
               </AnimatePresence>
             </div>
 
-            {/* Pill-dot progress */}
-            <div className="flex shrink-0 flex-col items-end pt-1">
+            {/* Logout (desktop) + Pill-dot progress */}
+            <div className="flex shrink-0 flex-col items-end gap-1 pt-1">
+              <button
+                onClick={handleLogout}
+                className="hidden items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex"
+              >
+                <LogOut className="h-3 w-3" />
+                {tc('signOut')}
+              </button>
               <div className="flex gap-1">
                 {Array.from({ length: MAX_INTERESTS }).map((_, i) => (
                   <motion.div

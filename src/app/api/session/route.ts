@@ -22,6 +22,20 @@ export async function GET() {
       )
     }
 
+    // Verify onboarding is completed before creating sessions
+    const { data: onboardingCheck } = await supabase
+      .from('profiles')
+      .select('onboarding_completed')
+      .eq('id', user.id)
+      .single()
+
+    if (!onboardingCheck || !onboardingCheck.onboarding_completed) {
+      return NextResponse.json(
+        { error: 'Onboarding not completed' },
+        { status: 403 }
+      )
+    }
+
     // Check for an existing session today
     const today = new Date().toISOString().split('T')[0]
 

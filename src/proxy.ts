@@ -50,23 +50,34 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Check onboarding status for non-onboarding pages (skip API routes)
-  if (pathname !== '/onboarding' && !pathname.startsWith('/api/')) {
+  // Check onboarding status (skip API routes)
+  if (!pathname.startsWith('/api/')) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('onboarding_completed, preferred_language')
       .eq('id', user.id)
       .single()
 
-    if (profile && !profile.onboarding_completed) {
+    // No profile or onboarding not completed → redirect to /onboarding
+    if (!profile || !profile.onboarding_completed) {
+      if (pathname !== '/onboarding') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/onboarding'
+        return NextResponse.redirect(url)
+      }
+      return supabaseResponse
+    }
+
+    // Onboarding completed but user is visiting /onboarding → redirect to dashboard
+    if (pathname === '/onboarding') {
       const url = request.nextUrl.clone()
-      url.pathname = '/onboarding'
+      url.pathname = '/'
       return NextResponse.redirect(url)
     }
 
     // Sync locale cookie from profile if not already set
     const localeCookie = request.cookies.get('NEXT_LOCALE')
-    if (!localeCookie && profile?.preferred_language) {
+    if (!localeCookie && profile.preferred_language) {
       supabaseResponse.cookies.set('NEXT_LOCALE', profile.preferred_language, {
         path: '/',
         maxAge: 60 * 60 * 24 * 365,
