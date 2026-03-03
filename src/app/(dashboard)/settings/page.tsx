@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Loader2, Save, LogOut } from 'lucide-react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { useTranslations, useLocale } from 'next-intl'
 import { LanguagePicker } from '@/components/settings/language-picker'
@@ -48,19 +48,20 @@ export default function SettingsPage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('display_name, daily_word_count, preferred_difficulty, timezone')
-        .eq('id', user.id)
-        .single()
+      const [profileResult, interestsRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('display_name, daily_word_count, preferred_difficulty, timezone')
+          .eq('id', user.id)
+          .single(),
+        fetch('/api/interests'),
+      ])
 
+      const profile = profileResult.data
       if (profile) {
         setDisplayName(profile.display_name || '')
         setDailyWordCount(profile.daily_word_count || 10)
@@ -68,11 +69,11 @@ export default function SettingsPage() {
         setTimezone(profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone)
       }
 
-      const res = await fetch('/api/interests')
-      if (!res.ok) throw new Error('Failed to load interests')
-      const data = await res.json()
-      setAllInterests(data.all || [])
-      setSelectedInterests(new Set(data.selected || []))
+      if (interestsRes.ok) {
+        const data = await interestsRes.json()
+        setAllInterests(data.all || [])
+        setSelectedInterests(new Set(data.selected || []))
+      }
 
       setIsLoading(false)
     }
@@ -95,10 +96,7 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
@@ -138,10 +136,7 @@ export default function SettingsPage() {
   }
 
   const handleLogout = async () => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()

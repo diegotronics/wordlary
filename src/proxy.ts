@@ -52,37 +52,55 @@ export async function proxy(request: NextRequest) {
 
   // Check onboarding status (skip API routes)
   if (!pathname.startsWith('/api/')) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('onboarding_completed, preferred_language')
-      .eq('id', user.id)
-      .single()
+    const onboardingDone = request.cookies.get('onboarding_done')?.value === '1'
 
-    // No profile or onboarding not completed → redirect to /onboarding
-    if (!profile || !profile.onboarding_completed) {
-      if (pathname !== '/onboarding') {
+    if (onboardingDone) {
+      // User already completed onboarding — skip DB query
+      if (pathname === '/onboarding') {
         const url = request.nextUrl.clone()
-        url.pathname = '/onboarding'
+        url.pathname = '/'
         return NextResponse.redirect(url)
       }
-      return supabaseResponse
-    }
+    } else {
+      // No cookie — check DB
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed, preferred_language')
+        .eq('id', user.id)
+        .single()
 
-    // Onboarding completed but user is visiting /onboarding → redirect to dashboard
-    if (pathname === '/onboarding') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/'
-      return NextResponse.redirect(url)
-    }
+      if (!profile || !profile.onboarding_completed) {
+        if (pathname !== '/onboarding') {
+          const url = request.nextUrl.clone()
+          url.pathname = '/onboarding'
+          return NextResponse.redirect(url)
+        }
+        return supabaseResponse
+      }
 
-    // Sync locale cookie from profile if not already set
-    const localeCookie = request.cookies.get('NEXT_LOCALE')
-    if (!localeCookie && profile.preferred_language) {
-      supabaseResponse.cookies.set('NEXT_LOCALE', profile.preferred_language, {
+      // Onboarding is completed — set cookie to skip DB query on future navigations
+      supabaseResponse.cookies.set('onboarding_done', '1', {
         path: '/',
         maxAge: 60 * 60 * 24 * 365,
         sameSite: 'lax',
+        httpOnly: true,
       })
+
+      if (pathname === '/onboarding') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/'
+        return NextResponse.redirect(url)
+      }
+
+      // Sync locale cookie from profile if not already set
+      const localeCookie = request.cookies.get('NEXT_LOCALE')
+      if (!localeCookie && profile.preferred_language) {
+        supabaseResponse.cookies.set('NEXT_LOCALE', profile.preferred_language, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax',
+        })
+      }
     }
   }
 

@@ -1,6 +1,5 @@
 'use client'
-
-import { useState, useEffect, useCallback } from 'react'
+import useSWR from 'swr'
 
 export interface WordItem {
   id: string
@@ -30,48 +29,36 @@ export interface WordsFilters {
   page: number
 }
 
+function buildKey(filters: WordsFilters): string {
+  const params = new URLSearchParams()
+  if (filters.q) params.set('q', filters.q)
+  if (filters.interest) params.set('interest', filters.interest)
+  if (filters.learned) params.set('learned', filters.learned)
+  params.set('sort', filters.sort)
+  params.set('order', filters.order)
+  params.set('page', String(filters.page))
+  return `/api/words/all?${params}`
+}
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('words')
+  return res.json()
+}
+
 export function useWords(filters: WordsFilters) {
-  const [words, setWords] = useState<WordItem[]>([])
-  const [pagination, setPagination] = useState<WordsPagination>({
-    total: 0,
-    page: 1,
-    perPage: 20,
-    totalPages: 0,
+  const { data, isLoading } = useSWR(buildKey(filters), fetcher, {
+    revalidateOnFocus: false,
+    keepPreviousData: true,
   })
-  const [isLoading, setIsLoading] = useState(true)
 
-  const fetchWords = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (filters.q) params.set('q', filters.q)
-      if (filters.interest) params.set('interest', filters.interest)
-      if (filters.learned) params.set('learned', filters.learned)
-      params.set('sort', filters.sort)
-      params.set('order', filters.order)
-      params.set('page', String(filters.page))
-
-      const res = await fetch(`/api/words/all?${params}`)
-      if (!res.ok) return
-
-      const data = await res.json()
-      setWords(data.words ?? [])
-      setPagination({
-        total: data.total,
-        page: data.page,
-        perPage: data.per_page,
-        totalPages: data.total_pages,
-      })
-    } catch {
-      // keep current state on error
-    } finally {
-      setIsLoading(false)
-    }
-  }, [filters.q, filters.interest, filters.learned, filters.sort, filters.order, filters.page])
-
-  useEffect(() => {
-    fetchWords()
-  }, [fetchWords])
+  const words: WordItem[] = data?.words ?? []
+  const pagination: WordsPagination = {
+    total: data?.total ?? 0,
+    page: data?.page ?? 1,
+    perPage: data?.per_page ?? 20,
+    totalPages: data?.total_pages ?? 0,
+  }
 
   return { words, pagination, isLoading }
 }

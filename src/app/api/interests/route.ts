@@ -168,6 +168,16 @@ export async function PUT(request: NextRequest) {
           { status: 500 }
         )
       }
+
+      // Set cookie so proxy skips the profile DB query on future navigations
+      const response = NextResponse.json({ selected: validation.data })
+      response.cookies.set('onboarding_done', '1', {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax',
+        httpOnly: true,
+      })
+      return response
     }
 
     // Return the updated selection
