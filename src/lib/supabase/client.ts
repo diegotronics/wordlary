@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Browser Supabase Client
+// Wordlary - Browser Supabase Client
 // For use in Client Components (browser environment)
 // ============================================================================
 

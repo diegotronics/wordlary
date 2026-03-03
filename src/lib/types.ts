@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - TypeScript Type Definitions
+// Wordlary - TypeScript Type Definitions
 // English vocabulary learning app for Spanish speakers
 // ============================================================================
 

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'VocabFlow',
+  title: 'Wordlary',
   description:
     'Personalized English vocabulary learning for Spanish speakers with spaced repetition.',
   manifest: '/manifest.json',

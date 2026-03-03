@@ -1,6 +1,6 @@
 {
-  "name": "VocabFlow",
-  "short_name": "VocabFlow",
+  "name": "Wordlary",
+  "short_name": "Wordlary",
   "description": "Learn English vocabulary with personalized daily sessions and spaced repetition",
   "start_url": "/",
   "display": "standalone",

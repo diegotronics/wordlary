@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Interests API
+// Wordlary - Interests API
 // GET:  Get all interests and the user's selected ones
 // PUT:  Update the user's interest selections
 // ============================================================================

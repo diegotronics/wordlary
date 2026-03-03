@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Pronunciation Audio URL Resolver
+// Wordlary - Pronunciation Audio URL Resolver
 // POST: Resolve and cache audio URL from Free Dictionary API
 // ============================================================================
 

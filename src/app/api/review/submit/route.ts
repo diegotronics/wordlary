@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Review Submission API
+// Wordlary - Review Submission API
 // POST: Submit a review result and apply the SM-2 algorithm
 // ============================================================================
 

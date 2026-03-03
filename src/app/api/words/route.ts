@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Words List API
+// Wordlary - Words List API
 // GET: List words for a session (defaults to today's session)
 // ============================================================================
 

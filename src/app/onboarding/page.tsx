@@ -363,7 +363,7 @@ export default function OnboardingPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                  VocabFlow · {t('initialSetup')}
+                  Wordlary · {t('initialSetup')}
                 </p>
                 <button
                   onClick={handleLogout}

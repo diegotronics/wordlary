@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - All Words API
+// Wordlary - All Words API
 // GET: Paginated list of all learned words with search, filter, and sort
 // ============================================================================
 

@@ -36,7 +36,7 @@ export function Sidebar() {
     <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:bg-muted/30">
       <div className="flex h-16 items-center gap-2 border-b px-6">
         <BookOpen className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold">VocabFlow</span>
+        <span className="text-lg font-bold">Wordlary</span>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 p-4">

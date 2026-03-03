@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Google Gemini AI Client
+// Wordlary - Google Gemini AI Client
 // ============================================================================
 
 import { GoogleGenerativeAI } from '@google/generative-ai';

@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - SM-2 Spaced Repetition Algorithm
+// Wordlary - SM-2 Spaced Repetition Algorithm
 // Based on the SuperMemo SM-2 algorithm by Piotr Wozniak
 // ============================================================================
 

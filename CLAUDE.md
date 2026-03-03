@@ -14,7 +14,7 @@ No test framework is configured.
 
 ## Architecture
 
-VocabFlow is a vocabulary learning app for Spanish speakers learning English. Users register, pick interests during onboarding, receive daily AI-generated word sessions (via Google Gemini), and review words using spaced repetition (SM-2 algorithm).
+Wordlary is a vocabulary learning app for Spanish speakers learning English. Users register, pick interests during onboarding, receive daily AI-generated word sessions (via Google Gemini), and review words using spaced repetition (SM-2 algorithm).
 
 ### Data Flow
 

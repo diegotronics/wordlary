@@ -1,6 +1,6 @@
 <div align="center">
 
-# VocabFlow
+# Wordlary
 
 **AI-powered vocabulary learning for Spanish speakers mastering English.**
 
@@ -16,9 +16,9 @@ Daily personalized word sessions, interactive flashcards, and spaced repetition 
 
 ---
 
-## Why VocabFlow?
+## Why Wordlary?
 
-Most vocabulary apps give everyone the same word list. VocabFlow generates **personalized words based on your interests** — if you love cooking, you'll learn kitchen vocabulary; if you're into tech, you'll get programming terms. Each day brings a fresh session of 10 words (configurable), and a built-in spaced repetition system makes sure you actually remember them.
+Most vocabulary apps give everyone the same word list. Wordlary generates **personalized words based on your interests** — if you love cooking, you'll learn kitchen vocabulary; if you're into tech, you'll get programming terms. Each day brings a fresh session of 10 words (configurable), and a built-in spaced repetition system makes sure you actually remember them.
 
 ### Key Features
 
@@ -58,8 +58,8 @@ Most vocabulary apps give everyone the same word list. VocabFlow generates **per
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/your-username/vocabflow.git
-cd vocabflow
+git clone https://github.com/your-username/wordlary.git
+cd wordlary
 npm install
 ```
 
@@ -132,7 +132,7 @@ Open [http://localhost:3000](http://localhost:3000) and create your account.
 
 ### SM-2 Algorithm
 
-VocabFlow uses the [SuperMemo SM-2](https://en.wikipedia.org/wiki/SuperMemo#Description_of_SM-2_algorithm) spaced repetition algorithm (the same one behind Anki). The implementation lives in [`src/lib/spaced-repetition/sm2.ts`](src/lib/spaced-repetition/sm2.ts).
+Wordlary uses the [SuperMemo SM-2](https://en.wikipedia.org/wiki/SuperMemo#Description_of_SM-2_algorithm) spaced repetition algorithm (the same one behind Anki). The implementation lives in [`src/lib/spaced-repetition/sm2.ts`](src/lib/spaced-repetition/sm2.ts).
 
 ## Project Structure
 

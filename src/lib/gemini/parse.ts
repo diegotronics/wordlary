@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Gemini Response Parser
+// Wordlary - Gemini Response Parser
 // ============================================================================
 
 import { generatedWordsSchema } from '@/lib/validators';

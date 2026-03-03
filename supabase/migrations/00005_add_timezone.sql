@@ -1,5 +1,5 @@
 -- =============================================================================
--- VocabFlow - Add timezone column to profiles
+-- Wordlary - Add timezone column to profiles
 -- =============================================================================
 
 ALTER TABLE public.profiles

@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Middleware Supabase Client
+// Wordlary - Middleware Supabase Client
 // For use in Next.js middleware to refresh auth sessions
 // ============================================================================
 

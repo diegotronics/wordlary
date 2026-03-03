@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Statistics API
+// Wordlary - Statistics API
 // GET: Get comprehensive user learning statistics
 // ============================================================================
 

@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Word Generation API
+// Wordlary - Word Generation API
 // POST: Generate vocabulary words from word bank + Google Gemini fallback
 // ============================================================================
 

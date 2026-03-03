@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Server Supabase Client
+// Wordlary - Server Supabase Client
 // For use in Server Components, Route Handlers, and Server Actions
 // ============================================================================
 

@@ -1,5 +1,5 @@
 -- =============================================================================
--- VocabFlow - Vocabulary Learning App Schema
+-- Wordlary - Vocabulary Learning App Schema
 -- Supabase PostgreSQL
 -- =============================================================================
 

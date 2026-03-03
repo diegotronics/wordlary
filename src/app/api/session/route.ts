@@ -1,5 +1,5 @@
 // ============================================================================
-// VocabFlow - Daily Session API
+// Wordlary - Daily Session API
 // GET: Get or create today's learning session
 // ============================================================================
 
