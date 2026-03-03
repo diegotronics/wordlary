@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
+import { PronunciationButtons } from '@/components/shared/pronunciation-buttons'
 
 interface WordCardProps {
+  id: string
   word: string
   ipa: string
   exampleSentence: string
@@ -12,9 +14,11 @@ interface WordCardProps {
   sentenceEs: string
   interestSlug: string
   isLearned: boolean
+  audioUrl?: string | null
 }
 
 export function WordCard({
+  id,
   word,
   ipa,
   exampleSentence,
@@ -22,6 +26,7 @@ export function WordCard({
   sentenceEs,
   interestSlug,
   isLearned,
+  audioUrl,
 }: WordCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
   const t = useTranslations('session')
@@ -51,7 +56,10 @@ export function WordCard({
             {interestSlug}
           </span>
           <h2 className="mt-3 text-3xl font-bold">{word}</h2>
-          <p className="mt-1 text-lg text-muted-foreground">{ipa}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <p className="text-lg text-muted-foreground">{ipa}</p>
+            <PronunciationButtons wordId={id} word={word} audioUrl={audioUrl} />
+          </div>
           <div className="mt-6 rounded-lg bg-muted/50 p-3">
             <p className="text-center text-sm leading-relaxed">&ldquo;{exampleSentence}&rdquo;</p>
           </div>

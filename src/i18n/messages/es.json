@@ -198,6 +198,10 @@
     "next": "Siguiente",
     "showingCount": "{count} palabras"
   },
+  "pronunciation": {
+    "playNormal": "Reproducir pronunciación",
+    "playSlow": "Reproducir pronunciación lenta"
+  },
   "interests": {
     "technology": "Tecnología",
     "sports": "Deportes",

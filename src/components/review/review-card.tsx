@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
+import { PronunciationButtons } from '@/components/shared/pronunciation-buttons'
 
 interface ReviewCardProps {
+  id: string
   word: string
   ipa: string
   exampleSentence: string
@@ -11,9 +13,11 @@ interface ReviewCardProps {
   sentenceEs: string
   isFlipped: boolean
   onFlip: () => void
+  audioUrl?: string | null
 }
 
 export function ReviewCard({
+  id,
   word,
   ipa,
   exampleSentence,
@@ -21,6 +25,7 @@ export function ReviewCard({
   sentenceEs,
   isFlipped,
   onFlip,
+  audioUrl,
 }: ReviewCardProps) {
   const t = useTranslations('review')
 
@@ -42,7 +47,10 @@ export function ReviewCard({
         >
           <p className="text-xs text-muted-foreground">{t('doYouRemember')}</p>
           <h2 className="mt-4 text-3xl font-bold">{word}</h2>
-          <p className="mt-1 text-lg text-muted-foreground">{ipa}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <p className="text-lg text-muted-foreground">{ipa}</p>
+            <PronunciationButtons wordId={id} word={word} audioUrl={audioUrl} />
+          </div>
           <div className="mt-6 rounded-lg bg-muted/50 p-3">
             <p className="text-center text-sm leading-relaxed">&ldquo;{exampleSentence}&rdquo;</p>
           </div>

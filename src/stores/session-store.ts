@@ -10,6 +10,7 @@ interface Word {
   sentence_es: string
   interest_slug: string
   is_learned: boolean
+  audio_url: string | null
 }
 
 interface Session {

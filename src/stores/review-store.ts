@@ -8,6 +8,7 @@ export interface ReviewWord {
   example_sentence: string
   word_es: string
   sentence_es: string
+  audio_url: string | null
   review_schedule: {
     id: string
     repetition_number: number
@@ -92,6 +93,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
           example_sentence: (lw.example_sentence as string) || '',
           word_es: (lw.word_es as string) || '',
           sentence_es: (lw.sentence_es as string) || '',
+          audio_url: (lw.audio_url as string) || null,
           review_schedule: {
             id: r.id as string,
             repetition_number: r.repetition_number as number,

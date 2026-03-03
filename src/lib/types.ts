@@ -67,6 +67,7 @@ export interface LearnedWord {
   interest_slug: string;
   is_learned: boolean;
   session_id: string;
+  audio_url: string | null;
   created_at: string;
   updated_at: string;
 }

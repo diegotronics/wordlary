@@ -142,6 +142,7 @@ export default function ReviewPage() {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
             <ReviewCard
+              id={currentWord.id}
               word={currentWord.word}
               ipa={currentWord.ipa}
               exampleSentence={currentWord.example_sentence}
@@ -149,6 +150,7 @@ export default function ReviewPage() {
               sentenceEs={currentWord.sentence_es}
               isFlipped={isFlipped}
               onFlip={isSubmitting ? () => {} : flipCard}
+              audioUrl={currentWord.audio_url}
             />
           </motion.div>
         </AnimatePresence>

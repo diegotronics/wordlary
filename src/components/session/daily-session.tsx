@@ -82,6 +82,7 @@ export function DailySession() {
 
       <WordCard
         key={currentWord.id}
+        id={currentWord.id}
         word={currentWord.word}
         ipa={currentWord.ipa}
         exampleSentence={currentWord.example_sentence}
@@ -89,6 +90,7 @@ export function DailySession() {
         sentenceEs={currentWord.sentence_es}
         interestSlug={currentWord.interest_slug}
         isLearned={currentWord.is_learned}
+        audioUrl={currentWord.audio_url}
       />
 
       <div className="flex items-center justify-center gap-3">
