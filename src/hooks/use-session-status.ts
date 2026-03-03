@@ -28,7 +28,6 @@ export function useSessionStatus() {
     '/api/session',
     fetcher,
     {
-      revalidateOnFocus: false,
       dedupingInterval: 10000,
     }
   )

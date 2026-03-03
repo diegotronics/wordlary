@@ -40,7 +40,6 @@ const fetcher = (url: string) =>
 
 export function useStats() {
   const { data: stats, isLoading } = useSWR<Stats>('/api/stats', fetcher, {
-    revalidateOnFocus: false,
     dedupingInterval: 30000,
   })
 
