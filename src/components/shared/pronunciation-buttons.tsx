@@ -36,27 +36,25 @@ export function PronunciationButtons({
   } = usePronunciation({ wordId, word, audioUrl })
   const t = useTranslations('pronunciation')
 
-  const isAnyPlaying = isPlayingNormal || isPlayingSlow
-
   return (
-    <div className="inline-flex items-center gap-0.5">
+    <div className="inline-flex items-center gap-1">
       <Button
         variant="ghost"
-        size="icon-xs"
+        size="icon-sm"
         onClick={playNormal}
         aria-label={t('playNormal')}
         disabled={isLoading || isPlayingSlow}
-        className="text-muted-foreground hover:text-foreground"
+        className="min-h-11 min-w-11 text-muted-foreground hover:text-foreground"
       >
         {isLoading ? (
-          <Loader2 className="size-3.5 animate-spin" />
+          <Loader2 className="size-5 animate-spin" />
         ) : (
           <motion.div
             animate={isPlayingNormal ? pulseAnimation : {}}
             transition={pulseTransition}
           >
             <Volume2
-              className={`size-3.5 ${isPlayingNormal ? 'text-primary' : ''}`}
+              className={`size-5 ${isPlayingNormal ? 'text-primary' : ''}`}
             />
           </motion.div>
         )}
@@ -64,18 +62,18 @@ export function PronunciationButtons({
 
       <Button
         variant="ghost"
-        size="icon-xs"
+        size="icon-sm"
         onClick={playSlow}
         aria-label={t('playSlow')}
         disabled={isLoading || isPlayingNormal}
-        className="text-muted-foreground hover:text-foreground"
+        className="min-h-11 min-w-11 text-muted-foreground hover:text-foreground"
       >
         <motion.div
           animate={isPlayingSlow ? pulseAnimation : {}}
           transition={{ ...pulseTransition, duration: 1.0 }}
         >
           <Volume1
-            className={`size-3.5 ${isPlayingSlow ? 'text-primary' : ''}`}
+            className={`size-5 ${isPlayingSlow ? 'text-primary' : ''}`}
           />
         </motion.div>
       </Button>
