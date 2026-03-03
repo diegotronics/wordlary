@@ -80,7 +80,7 @@ export const MIN_EASE_FACTOR = 1.3
 export const REVIEW_QUALITIES = {
   Again: 0,
   Hard: 1,
-  Good: 3,
+  Good: 4,
   Easy: 5,
 } as const
 

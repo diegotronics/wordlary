@@ -7,7 +7,7 @@ import { calculateSM2 } from '@/lib/spaced-repetition/sm2'
 import type { ReviewQuality } from '@/lib/types'
 
 interface DifficultyButtonsProps {
-  onRate: (quality: 0 | 1 | 3 | 5) => void
+  onRate: (quality: 0 | 1 | 4 | 5) => void
   disabled?: boolean
   currentSchedule: {
     repetitionNumber: number
@@ -30,7 +30,7 @@ export function DifficultyButtons({ onRate, disabled, currentSchedule }: Difficu
   const buttons = [
     { quality: 0 as const, label: t('again'), description: t('forgot'), variant: 'destructive' as const },
     { quality: 1 as const, label: t('hard'), description: t('struggled'), variant: 'outline' as const },
-    { quality: 3 as const, label: t('good'), description: t('recalled'), variant: 'outline' as const },
+    { quality: 4 as const, label: t('good'), description: t('recalled'), variant: 'outline' as const },
     { quality: 5 as const, label: t('easy'), description: t('instant'), variant: 'default' as const },
   ]
 

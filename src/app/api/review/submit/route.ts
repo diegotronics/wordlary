@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     // Update review counters
     const newTotalReviews = schedule.total_reviews + 1
     const newCorrectReviews =
-      quality >= 3
+      quality >= 4
         ? schedule.correct_reviews + 1
         : schedule.correct_reviews
 

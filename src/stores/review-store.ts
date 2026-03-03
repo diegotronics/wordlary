@@ -26,7 +26,7 @@ export interface SessionStats {
 }
 
 export interface LastResult {
-  quality: 0 | 1 | 3 | 5
+  quality: 0 | 1 | 4 | 5
   intervalDays: number
 }
 
@@ -44,7 +44,7 @@ interface ReviewStore {
   seenIds: Set<string>
 
   fetchReviewWords: () => Promise<void>
-  submitReview: (wordId: string, quality: 0 | 1 | 3 | 5) => Promise<void>
+  submitReview: (wordId: string, quality: 0 | 1 | 4 | 5) => Promise<void>
   flipCard: () => void
   reset: () => void
 }
@@ -120,7 +120,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
     }
   },
 
-  submitReview: async (wordId: string, quality: 0 | 1 | 3 | 5) => {
+  submitReview: async (wordId: string, quality: 0 | 1 | 4 | 5) => {
     if (get().isSubmitting) return
     set({ isSubmitting: true })
 
@@ -148,14 +148,14 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
       const newSeenIds = new Set(seenIds)
       newSeenIds.add(wordId)
 
-      if (quality < 3) {
+      if (quality < 4) {
         // Re-queue failed words at the end
         newQueue.push(wordId)
       }
 
       set({
         queue: newQueue,
-        completedCount: quality >= 3 ? completedCount + 1 : completedCount,
+        completedCount: quality >= 4 ? completedCount + 1 : completedCount,
         isFlipped: false,
         lastResult: null,
         isSubmitting: false,
@@ -164,7 +164,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
           totalReviews: sessionStats.totalReviews + 1,
           againCount: sessionStats.againCount + (quality === 0 ? 1 : 0),
           hardCount: sessionStats.hardCount + (quality === 1 ? 1 : 0),
-          goodCount: sessionStats.goodCount + (quality === 3 ? 1 : 0),
+          goodCount: sessionStats.goodCount + (quality === 4 ? 1 : 0),
           easyCount: sessionStats.easyCount + (quality === 5 ? 1 : 0),
         },
       })

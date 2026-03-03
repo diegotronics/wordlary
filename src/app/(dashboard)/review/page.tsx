@@ -48,10 +48,10 @@ export default function ReviewPage() {
       }
 
       if (isFlipped && !isSubmitting) {
-        const keyMap: Record<string, 0 | 1 | 3 | 5> = {
+        const keyMap: Record<string, 0 | 1 | 4 | 5> = {
           '1': 0,
           '2': 1,
-          '3': 3,
+          '3': 4,
           '4': 5,
         }
         if (e.key in keyMap) {
@@ -165,7 +165,7 @@ export default function ReviewPage() {
               className="absolute inset-0 z-10 flex items-center justify-center"
             >
               <div className="mx-auto flex h-[320px] w-full max-w-sm items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm">
-                {lastResult.quality < 3 ? (
+                {lastResult.quality < 4 ? (
                   <p className="text-sm font-medium text-orange-500">
                     {t('requeued')}
                   </p>

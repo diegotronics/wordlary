@@ -120,4 +120,4 @@ export interface WordBankEntry {
 // ---------------------------------------------------------------------------
 // Spaced Repetition Review Quality Ratings
 // ---------------------------------------------------------------------------
-export type ReviewQuality = 0 | 1 | 3 | 5;
+export type ReviewQuality = 0 | 1 | 4 | 5;

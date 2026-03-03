@@ -34,8 +34,8 @@ export const reviewSubmissionSchema = z.object({
   quality: z
     .number()
     .refine(
-      (val): val is 0 | 1 | 3 | 5 => [0, 1, 3, 5].includes(val),
-      { message: "Quality must be 0 (Again), 1 (Hard), 3 (Good), or 5 (Easy)" }
+      (val): val is 0 | 1 | 4 | 5 => [0, 1, 4, 5].includes(val),
+      { message: "Quality must be 0 (Again), 1 (Hard), 4 (Good), or 5 (Easy)" }
     ),
 });
 

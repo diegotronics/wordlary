@@ -12,7 +12,7 @@ import type { ReviewQuality } from '@/lib/types';
 // ---------------------------------------------------------------------------
 
 export interface SM2Input {
-  /** Review quality: 0 (Again), 1 (Hard), 3 (Good), 5 (Easy) */
+  /** Review quality: 0 (Again), 1 (Hard), 4 (Good), 5 (Easy) */
   quality: ReviewQuality;
   /** Current repetition count (0 = never successfully reviewed) */
   repetitionNumber: number;
@@ -45,7 +45,7 @@ export interface SM2Output {
  * Quality ratings:
  *   0 = Again  (complete blackout, no recognition)
  *   1 = Hard   (incorrect but upon seeing the answer it felt familiar)
- *   3 = Good   (correct with some difficulty)
+ *   4 = Good   (correct with some difficulty — neutral ease factor)
  *   5 = Easy   (perfect, immediate recall)
  *
  * @param input - Current card state and review quality
@@ -57,12 +57,12 @@ export function calculateSM2(input: SM2Input): SM2Output {
   let newRepetitionNumber: number;
   let newIntervalDays: number;
 
-  if (quality < 3) {
+  if (quality < 4) {
     // Again (0) or Hard (1): reset progress
     newRepetitionNumber = 0;
     newIntervalDays = 1;
   } else {
-    // Good (3) or Easy (5): advance through the schedule
+    // Good (4) or Easy (5): advance through the schedule
     if (repetitionNumber === 0) {
       newIntervalDays = 1;
     } else if (repetitionNumber === 1) {
