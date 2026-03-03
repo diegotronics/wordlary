@@ -26,7 +26,7 @@ export function ReviewCard({
 
   return (
     <div
-      className="perspective-1000 mx-auto h-[280px] w-full max-w-sm cursor-pointer"
+      className="perspective-1000 relative mx-auto h-[320px] w-full max-w-sm cursor-pointer"
       onClick={onFlip}
     >
       <motion.div

@@ -128,7 +128,21 @@
     "reviewsDone": "Reviews Done!",
     "reviewedWords": "You reviewed {count} words. Keep it up!",
     "backToHome": "Back to Home",
-    "viewProgress": "View Progress"
+    "viewProgress": "View Progress",
+    "intervalDay": "{count}d",
+    "intervalMonth": "~{count}mo",
+    "requeued": "You'll see this again soon",
+    "nextIn": "Next in {interval}",
+    "flipShortcut": "Space to flip",
+    "ratingShortcuts": "1-4 to rate",
+    "sessionAccuracy": "Accuracy",
+    "totalReviews": "Total reviews",
+    "againWords": "To relearn",
+    "uniqueReviewed": "Words reviewed",
+    "greatSession": "Great session! Most words recalled well.",
+    "keepPracticing": "Keep it up! Practice makes perfect.",
+    "perfectSession": "Perfect recall on every word!",
+    "needsWork": "Needs work"
   },
   "progress": {
     "title": "Progress",

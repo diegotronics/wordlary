@@ -128,7 +128,21 @@
     "reviewsDone": "¡Repaso terminado!",
     "reviewedWords": "Repasaste {count} palabras. ¡Sigue así!",
     "backToHome": "Volver al inicio",
-    "viewProgress": "Ver progreso"
+    "viewProgress": "Ver progreso",
+    "intervalDay": "{count}d",
+    "intervalMonth": "~{count}m",
+    "requeued": "La verás de nuevo pronto",
+    "nextIn": "Próxima en {interval}",
+    "flipShortcut": "Espacio para voltear",
+    "ratingShortcuts": "1-4 para calificar",
+    "sessionAccuracy": "Precisión",
+    "totalReviews": "Repasos totales",
+    "againWords": "Por repasar",
+    "uniqueReviewed": "Palabras repasadas",
+    "greatSession": "¡Buena sesión! La mayoría bien recordadas.",
+    "keepPracticing": "¡Sigue así! La práctica hace al maestro.",
+    "perfectSession": "¡Recuerdo perfecto en cada palabra!",
+    "needsWork": "A trabajar"
   },
   "progress": {
     "title": "Progreso",
