@@ -506,7 +506,6 @@ export default function OnboardingPage() {
                   icon={<GraduationCap className="h-4 w-4" />}
                   label={t('levelIntermediate')}
                   hint={t('levelIntermediateHint')}
-                  badge={t('wordCountRecommended')}
                 />
                 <OptionCard
                   selected={level === 'advanced'}
