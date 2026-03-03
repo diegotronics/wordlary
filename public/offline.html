@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wordlary — Offline</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+        background: #fafafa;
+        color: #0f172a;
+        padding: 1.5rem;
+      }
+      .container {
+        text-align: center;
+        max-width: 24rem;
+      }
+      .icon {
+        width: 4rem;
+        height: 4rem;
+        margin: 0 auto 1.5rem;
+        color: #94a3b8;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+        font-size: 0.938rem;
+      }
+      p.secondary {
+        font-size: 0.813rem;
+        margin-bottom: 2rem;
+      }
+      button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        padding: 0.625rem 1.5rem;
+        border-radius: 0.625rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      button:hover {
+        background: #1e293b;
+      }
+      button:active {
+        background: #334155;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0a0a0a;
+          color: #f8fafc;
+        }
+        p {
+          color: #94a3b8;
+        }
+        .icon {
+          color: #64748b;
+        }
+        button {
+          background: #f8fafc;
+          color: #0f172a;
+        }
+        button:hover {
+          background: #e2e8f0;
+        }
+        button:active {
+          background: #cbd5e1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <svg
+        class="icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M2 8.82a15 15 0 0 1 4.17-2.65C8.41 5.12 10.19 4.5 12 4.5c1.81 0 3.59.62 5.83 1.67A15 15 0 0 1 22 8.82" />
+        <path d="M2 16.82a15 15 0 0 1 4.17-2.65c2.24-1.05 4.02-1.67 5.83-1.67 1.81 0 3.59.62 5.83 1.67A15 15 0 0 1 22 16.82" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </svg>
+      <h1>Sin conexion</h1>
+      <p>
+        No hay conexion a internet. Revisa tu conexion e intentalo de nuevo.
+      </p>
+      <p class="secondary">
+        No internet connection. Check your connection and try again.
+      </p>
+      <button onclick="location.reload()">Intentar de nuevo</button>
+    </div>
+  </body>
+</html>
