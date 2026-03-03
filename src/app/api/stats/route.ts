@@ -5,6 +5,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getUserToday } from '@/lib/date'
 
 export async function GET() {
   try {
@@ -22,12 +23,25 @@ export async function GET() {
       )
     }
 
-    const today = new Date().toISOString().split('T')[0]
+    // Fetch profile first to get timezone for date calculation
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('current_streak, longest_streak, timezone')
+      .eq('id', user.id)
+      .single()
 
-    // Run all queries in parallel for performance
+    if (profileError) {
+      return NextResponse.json(
+        { error: 'Failed to fetch profile data' },
+        { status: 500 }
+      )
+    }
+
+    const today = getUserToday(profile?.timezone)
+
+    // Run remaining queries in parallel for performance
     const [
       totalWordsResult,
-      profileResult,
       reviewsDueResult,
       wordsByInterestResult,
       sessionsCompletedResult,
@@ -39,13 +53,6 @@ export async function GET() {
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
         .eq('is_learned', true),
-
-      // Profile for streak data
-      supabase
-        .from('profiles')
-        .select('current_streak, longest_streak')
-        .eq('id', user.id)
-        .single(),
 
       // Words due for review today
       supabase
@@ -75,14 +82,6 @@ export async function GET() {
         .eq('user_id', user.id),
     ])
 
-    // Handle errors
-    if (profileResult.error) {
-      return NextResponse.json(
-        { error: 'Failed to fetch profile data' },
-        { status: 500 }
-      )
-    }
-
     // Calculate words by interest
     const interestCounts: Record<string, number> = {}
     if (wordsByInterestResult.data) {
@@ -108,8 +107,8 @@ export async function GET() {
 
     return NextResponse.json({
       total_words_learned: totalWordsResult.count ?? 0,
-      current_streak: profileResult.data?.current_streak ?? 0,
-      longest_streak: profileResult.data?.longest_streak ?? 0,
+      current_streak: profile?.current_streak ?? 0,
+      longest_streak: profile?.longest_streak ?? 0,
       words_due_for_review: reviewsDueResult.count ?? 0,
       words_by_interest: interestCounts,
       total_sessions_completed: sessionsCompletedResult.count ?? 0,

@@ -32,6 +32,7 @@ export default function SettingsPage() {
   const [difficulty, setDifficulty] = useState('intermediate')
   const [allInterests, setAllInterests] = useState<Interest[]>([])
   const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set())
+  const [timezone, setTimezone] = useState('')
   const currentLocale = useLocale()
   const [selectedLocale, setSelectedLocale] = useState(currentLocale)
 
@@ -56,7 +57,7 @@ export default function SettingsPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('display_name, daily_word_count, preferred_difficulty')
+        .select('display_name, daily_word_count, preferred_difficulty, timezone')
         .eq('id', user.id)
         .single()
 
@@ -64,6 +65,7 @@ export default function SettingsPage() {
         setDisplayName(profile.display_name || '')
         setDailyWordCount(profile.daily_word_count || 10)
         setDifficulty(profile.preferred_difficulty || 'intermediate')
+        setTimezone(profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone)
       }
 
       const res = await fetch('/api/interests')
@@ -106,6 +108,7 @@ export default function SettingsPage() {
           display_name: displayName,
           daily_word_count: dailyWordCount,
           preferred_difficulty: difficulty,
+          timezone,
         })
         .eq('id', user.id)
 
@@ -211,6 +214,24 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <LanguagePicker value={selectedLocale} onChange={setSelectedLocale} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{t('timezone')}</CardTitle>
+          <CardDescription>{t('timezoneHint')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <select
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            {Intl.supportedValuesOf('timeZone').map((tz) => (
+              <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
+            ))}
+          </select>
         </CardContent>
       </Card>
 

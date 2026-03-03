@@ -159,7 +159,9 @@
     "savedSuccess": "Settings saved successfully",
     "savedError": "Failed to save settings",
     "language": "App Language",
-    "languageHint": "Change the interface language"
+    "languageHint": "Change the interface language",
+    "timezone": "Timezone",
+    "timezoneHint": "Sessions and reviews reset at midnight in your timezone"
   },
   "words": {
     "title": "My Words",

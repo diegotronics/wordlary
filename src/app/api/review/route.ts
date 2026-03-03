@@ -5,6 +5,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getUserToday } from '@/lib/date'
 
 export async function GET() {
   try {
@@ -22,7 +23,13 @@ export async function GET() {
       )
     }
 
-    const today = new Date().toISOString().split('T')[0]
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', user.id)
+      .single()
+
+    const today = getUserToday(profile?.timezone)
 
     // Fetch review schedules due today or earlier, joined with learned_words
     const { data: reviews, error: reviewError } = await supabase

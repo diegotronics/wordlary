@@ -91,11 +91,12 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { interest_ids, complete_onboarding, daily_word_count, preferred_difficulty } = body as {
+    const { interest_ids, complete_onboarding, daily_word_count, preferred_difficulty, timezone } = body as {
       interest_ids: string[]
       complete_onboarding?: boolean
       daily_word_count?: number
       preferred_difficulty?: 'beginner' | 'intermediate' | 'advanced'
+      timezone?: string
     }
 
     // Validate interest_ids
@@ -150,6 +151,9 @@ export async function PUT(request: NextRequest) {
       }
       if (preferred_difficulty && ['beginner', 'intermediate', 'advanced'].includes(preferred_difficulty)) {
         profileUpdate.preferred_difficulty = preferred_difficulty
+      }
+      if (timezone && typeof timezone === 'string' && timezone.length <= 50) {
+        profileUpdate.timezone = timezone
       }
 
       const { error: profileError } = await supabase

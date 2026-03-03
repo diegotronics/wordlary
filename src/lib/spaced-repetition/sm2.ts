@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { MIN_EASE_FACTOR } from '@/lib/constants';
+import { getFutureDate } from '@/lib/date';
 import type { ReviewQuality } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
@@ -19,6 +20,8 @@ export interface SM2Input {
   easeFactor: number;
   /** Current interval in days before the next review */
   intervalDays: number;
+  /** IANA timezone for computing the next review date */
+  timezone?: string;
 }
 
 export interface SM2Output {
@@ -78,12 +81,8 @@ export function calculateSM2(input: SM2Input): SM2Output {
     easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)),
   );
 
-  // Calculate the next review date
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const nextReview = new Date(today);
-  nextReview.setDate(nextReview.getDate() + newIntervalDays);
-  const nextReviewDate = nextReview.toISOString().split('T')[0];
+  // Calculate the next review date in the user's timezone
+  const nextReviewDate = getFutureDate(newIntervalDays, input.timezone);
 
   return {
     repetitionNumber: newRepetitionNumber,

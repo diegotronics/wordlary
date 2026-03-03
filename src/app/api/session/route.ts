@@ -5,6 +5,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getUserToday } from '@/lib/date'
 
 export async function GET() {
   try {
@@ -25,7 +26,7 @@ export async function GET() {
     // Verify onboarding is completed before creating sessions
     const { data: onboardingCheck } = await supabase
       .from('profiles')
-      .select('onboarding_completed')
+      .select('onboarding_completed, timezone')
       .eq('id', user.id)
       .single()
 
@@ -37,7 +38,7 @@ export async function GET() {
     }
 
     // Check for an existing session today
-    const today = new Date().toISOString().split('T')[0]
+    const today = getUserToday(onboardingCheck?.timezone)
 
     const { data: existingSession, error: sessionError } = await supabase
       .from('daily_sessions')

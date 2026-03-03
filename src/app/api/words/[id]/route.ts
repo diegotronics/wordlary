@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getUserToday, getUserTomorrow, getUserYesterday } from '@/lib/date'
 
 export async function PATCH(
   request: NextRequest,
@@ -24,6 +25,13 @@ export async function PATCH(
         { status: 401 }
       )
     }
+
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', user.id)
+      .single()
+    const userTimezone = userProfile?.timezone
 
     const { id: wordId } = await params
     const body = await request.json()
@@ -103,9 +111,7 @@ export async function PATCH(
 
     // If marking as learned, create a review schedule entry
     if (is_learned && !wasLearned) {
-      const tomorrow = new Date()
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      const nextReviewDate = tomorrow.toISOString().split('T')[0]
+      const nextReviewDate = getUserTomorrow(userTimezone)
 
       sideEffects.push(
         supabase
@@ -131,7 +137,7 @@ export async function PATCH(
       // Update user streak
       sideEffects.push(
         (async () => {
-          const today = new Date().toISOString().split('T')[0]
+          const today = getUserToday(userTimezone)
 
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
@@ -141,9 +147,7 @@ export async function PATCH(
 
           if (profileError || !profile) return
 
-          const yesterday = new Date()
-          yesterday.setDate(yesterday.getDate() - 1)
-          const yesterdayStr = yesterday.toISOString().split('T')[0]
+          const yesterdayStr = getUserYesterday(userTimezone)
 
           let newStreak = profile.current_streak
           const lastDate = profile.last_session_date

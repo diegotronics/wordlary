@@ -159,7 +159,9 @@
     "savedSuccess": "Ajustes guardados correctamente",
     "savedError": "No se pudieron guardar los ajustes",
     "language": "Idioma de la app",
-    "languageHint": "Cambia el idioma de la interfaz"
+    "languageHint": "Cambia el idioma de la interfaz",
+    "timezone": "Zona horaria",
+    "timezoneHint": "Las sesiones y repasos se reinician a medianoche en tu zona horaria"
   },
   "words": {
     "title": "Mis Palabras",

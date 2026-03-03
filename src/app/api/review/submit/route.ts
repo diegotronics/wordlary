@@ -25,6 +25,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', user.id)
+      .single()
+
     // Parse and validate request body
     const body = await request.json()
     const validation = reviewSubmissionSchema.safeParse(body)
@@ -62,6 +68,7 @@ export async function POST(request: NextRequest) {
       repetitionNumber: schedule.repetition_number,
       easeFactor: schedule.ease_factor,
       intervalDays: schedule.interval_days,
+      timezone: profile?.timezone,
     })
 
     // Update review counters

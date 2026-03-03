@@ -209,6 +209,11 @@ export default function OnboardingPage() {
   // Step state (0-indexed)
   const [step, setStep] = useState(0)
 
+  // Auto-detect user's timezone (silent, no UI step)
+  const [detectedTimezone] = useState(() =>
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  )
+
   // Step 1: Language
   const [language, setLanguage] = useState('es')
 
@@ -328,6 +333,7 @@ export default function OnboardingPage() {
           complete_onboarding: true,
           daily_word_count: wordCount,
           preferred_difficulty: level,
+          timezone: detectedTimezone,
         }),
       })
       if (!res.ok) throw new Error('Failed to save')
