@@ -4,6 +4,8 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { Toaster } from '@/components/ui/sonner'
 import { ServiceWorkerRegister } from '@/components/pwa/service-worker-register'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const geistSans = Geist({
@@ -70,6 +72,8 @@ export default async function RootLayout({
         </NextIntlClientProvider>
         <Toaster position="top-center" richColors />
         <ServiceWorkerRegister />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
