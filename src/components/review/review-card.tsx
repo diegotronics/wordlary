@@ -13,7 +13,6 @@ interface ReviewCardProps {
   sentenceEs: string
   isFlipped: boolean
   onFlip: () => void
-  audioUrl?: string | null
 }
 
 export function ReviewCard({
@@ -25,7 +24,6 @@ export function ReviewCard({
   sentenceEs,
   isFlipped,
   onFlip,
-  audioUrl,
 }: ReviewCardProps) {
   const t = useTranslations('review')
 
@@ -49,7 +47,7 @@ export function ReviewCard({
           <h2 className="mt-4 text-3xl font-bold">{word}</h2>
           <div className="mt-1 flex items-center gap-2">
             <p className="text-lg text-muted-foreground">{ipa}</p>
-            <PronunciationButtons wordId={id} word={word} audioUrl={audioUrl} />
+            <PronunciationButtons wordId={id} word={word} />
           </div>
           <div className="mt-6 rounded-lg bg-muted/50 p-3">
             <p className="text-center text-sm leading-relaxed">&ldquo;{exampleSentence}&rdquo;</p>

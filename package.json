@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "db:push": "supabase db push"
+    "db:push": "npx supabase db push -y"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

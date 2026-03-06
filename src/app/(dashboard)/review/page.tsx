@@ -150,7 +150,6 @@ export default function ReviewPage() {
               sentenceEs={currentWord.sentence_es}
               isFlipped={isFlipped}
               onFlip={isSubmitting ? () => {} : flipCard}
-              audioUrl={currentWord.audio_url}
             />
           </motion.div>
         </AnimatePresence>

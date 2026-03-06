@@ -26,7 +26,6 @@ function makeReviewFromApi(id: string, overrides = {}) {
       example_sentence: 'Test.',
       word_es: 'prueba',
       sentence_es: 'Prueba.',
-      audio_url: null,
     },
     ...overrides,
   }
@@ -43,7 +42,6 @@ function seedStore(wordIds: string[]) {
       example_sentence: 'Test.',
       word_es: 'prueba',
       sentence_es: 'Prueba.',
-      audio_url: null,
       review_schedule: { id: `s-${id}`, repetition_number: 1, ease_factor: 2.5, interval_days: 6 },
     })
     queue.push(id)

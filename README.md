@@ -25,7 +25,7 @@ Most vocabulary apps give everyone the same word list. Wordlary generates **pers
 - **AI-Generated Sessions** — Google Gemini creates daily word batches tailored to your chosen interests and difficulty level
 - **Smart Word Bank** — Platform-wide vocabulary grows over time, reducing AI calls while keeping words fresh and relevant
 - **3D Flashcards** — Interactive cards with smooth flip animations showing word, IPA pronunciation, example sentence, and Spanish translation
-- **Pronunciation** — Audio playback via Free Dictionary API with Web Speech API fallback, supporting normal and slow speeds
+- **Pronunciation** — Audio playback via the browser's Web Speech API, supporting normal and slow speeds
 - **Spaced Repetition (SM-2)** — The same algorithm used by Anki. Rate your recall and the system schedules optimal review times
 - **Word Library** — Browse, search, and filter all your learned words with pagination and sorting
 - **Streak Tracking** — Stay motivated with current and longest streak counters
@@ -162,7 +162,6 @@ src/
 │       ├── words/all/          #   Paginated word list with filters
 │       ├── review/             #   Get words due for review
 │       ├── review/submit/      #   Submit review ratings
-│       ├── pronunciation/      #   Audio URL resolution + caching
 │       ├── stats/              #   User statistics
 │       ├── interests/          #   Interest management
 │       ├── locale/             #   Language preference
@@ -205,7 +204,6 @@ src/
 | `/api/words/[id]` | `PATCH` | Mark a word as learned |
 | `/api/review` | `GET` | Fetch words due for spaced repetition review |
 | `/api/review/submit` | `POST` | Submit a review rating and update SM-2 schedule |
-| `/api/pronunciation` | `POST` | Resolve audio URL (Free Dictionary API) with caching |
 | `/api/stats` | `GET` | Get user learning statistics |
 | `/api/interests` | `GET` | List all available interests |
 | `/api/interests` | `PUT` | Update user's selected interests |
@@ -225,7 +223,7 @@ All endpoints require authentication. API routes validate ownership via `supabas
 | `interests` | 12 seeded topic categories |
 | `user_interests` | User ↔ Interest junction (3-6 per user) |
 | `daily_sessions` | One session per user per day |
-| `learned_words` | Words shown to users (unique per user + word), includes audio URL cache |
+| `learned_words` | Words shown to users (unique per user + word) |
 | `review_schedule` | SM-2 spaced repetition data per word |
 | `word_bank` | Shared platform vocabulary (grows via dual-write from Gemini) |
 
@@ -268,7 +266,6 @@ Contributions are welcome! Here's how to get started:
 Here are some areas where help would be appreciated:
 
 - **More Languages** — Expand the app to support other native languages beyond Spanish
-- **Audio Pronunciation** — Integrate a higher-quality text-to-speech API
 - **Word Categories** — Add more granular topic filtering within interests
 - **Export/Import** — Let users export their word lists (CSV, Anki deck)
 - **Accessibility** — Audit and improve keyboard navigation and screen reader support

@@ -55,11 +55,7 @@ A shared platform vocabulary that grows via dual-write. When `POST /api/generate
 
 ### Pronunciation
 
-`src/hooks/use-pronunciation.ts` orchestrates audio playback:
-1. First tries cached `audio_url` from `learned_words` table
-2. Falls back to Free Dictionary API (`POST /api/pronunciation`), caches result
-3. Final fallback: browser Web Speech API (`speechSynthesis`)
-4. Supports normal and slow playback speeds
+`src/hooks/use-pronunciation.ts` uses the browser's Web Speech API (`speechSynthesis`) for audio playback. Supports normal (1.0x) and slow (0.65x) playback speeds.
 
 ### Database
 

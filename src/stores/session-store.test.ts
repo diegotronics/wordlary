@@ -28,7 +28,6 @@ function makeWord(id: string, overrides = {}) {
     sentence_es: 'Frase de prueba.',
     interest_slug: 'technology',
     is_learned: false,
-    audio_url: null,
     ...overrides,
   }
 }

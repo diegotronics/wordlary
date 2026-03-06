@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 interface UsePronunciationOptions {
   wordId: string
   word: string
-  audioUrl?: string | null
 }
 
 interface UsePronunciationReturn {
@@ -13,7 +12,6 @@ interface UsePronunciationReturn {
   playSlow: (e: React.MouseEvent) => void
   isPlayingNormal: boolean
   isPlayingSlow: boolean
-  isLoading: boolean
 }
 
 function speakWithWebSpeech(word: string, rate: number): Promise<void> {
@@ -23,7 +21,6 @@ function speakWithWebSpeech(word: string, rate: number): Promise<void> {
       return
     }
 
-    // Cancel any ongoing speech
     window.speechSynthesis.cancel()
 
     const utterance = new SpeechSynthesisUtterance(word)
@@ -38,63 +35,18 @@ function speakWithWebSpeech(word: string, rate: number): Promise<void> {
 export function usePronunciation({
   wordId,
   word,
-  audioUrl,
 }: UsePronunciationOptions): UsePronunciationReturn {
-  const [resolvedUrl, setResolvedUrl] = useState<string | null>(
-    audioUrl ?? null
-  )
   const [isPlayingNormal, setIsPlayingNormal] = useState(false)
   const [isPlayingSlow, setIsPlayingSlow] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasResolved, setHasResolved] = useState(!!audioUrl)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-
-  // Sync if audioUrl prop changes (e.g. new word)
-  useEffect(() => {
-    setResolvedUrl(audioUrl ?? null)
-    setHasResolved(!!audioUrl)
-  }, [audioUrl])
 
   // Cleanup on unmount or word change
   useEffect(() => {
     return () => {
-      audioRef.current?.pause()
-      audioRef.current = null
       window.speechSynthesis?.cancel()
     }
   }, [wordId])
 
-  const resolveAudioUrl = useCallback(async (): Promise<string | null> => {
-    if (hasResolved) return resolvedUrl
-
-    setIsLoading(true)
-    try {
-      const response = await fetch('/api/pronunciation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word_id: wordId, word }),
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        const url = data.audio_url ?? null
-        setResolvedUrl(url)
-        setHasResolved(true)
-        return url
-      }
-    } catch {
-      // API failed — will fall back to Web Speech
-    } finally {
-      setIsLoading(false)
-    }
-
-    setHasResolved(true)
-    return null
-  }, [wordId, word, hasResolved, resolvedUrl])
-
   const stopCurrent = useCallback(() => {
-    audioRef.current?.pause()
-    audioRef.current = null
     window.speechSynthesis?.cancel()
     setIsPlayingNormal(false)
     setIsPlayingSlow(false)
@@ -103,36 +55,11 @@ export function usePronunciation({
   const play = useCallback(
     async (rate: number, setPlaying: (v: boolean) => void) => {
       stopCurrent()
-
-      const url = await resolveAudioUrl()
-
       setPlaying(true)
-
-      if (url) {
-        try {
-          const audio = new Audio(url)
-          audio.playbackRate = rate
-          audioRef.current = audio
-
-          await new Promise<void>((resolve, reject) => {
-            audio.onended = () => resolve()
-            audio.onerror = () => reject(new Error('Audio playback failed'))
-            audio.play().catch(reject)
-          })
-
-          setPlaying(false)
-          return
-        } catch {
-          // Audio failed — fall back to Web Speech
-          audioRef.current = null
-        }
-      }
-
-      // Web Speech fallback
       await speakWithWebSpeech(word, rate)
       setPlaying(false)
     },
-    [word, resolveAudioUrl, stopCurrent]
+    [word, stopCurrent]
   )
 
   const playNormal = useCallback(
@@ -156,6 +83,5 @@ export function usePronunciation({
     playSlow,
     isPlayingNormal,
     isPlayingSlow,
-    isLoading,
   }
 }

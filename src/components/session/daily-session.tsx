@@ -90,7 +90,6 @@ export function DailySession() {
         sentenceEs={currentWord.sentence_es}
         interestSlug={currentWord.interest_slug}
         isLearned={currentWord.is_learned}
-        audioUrl={currentWord.audio_url}
       />
 
       <div className="flex items-center justify-center gap-3">
